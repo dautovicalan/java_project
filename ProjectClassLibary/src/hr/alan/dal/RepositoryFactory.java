@@ -16,7 +16,8 @@ public class RepositoryFactory {
     }
     
     public static Repository getRepository(){
-        return new SqlRepository();
+        Repository repo = new SqlRepository();
+        return repo;
     }
     
 }

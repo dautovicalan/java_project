@@ -14,7 +14,10 @@ import javax.sql.DataSource;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Types;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -38,7 +41,7 @@ public class SqlRepository implements Repository{
     private static final String SELECT_ACTORS = "{ CALL selectActors }";
 
     @Override
-    public List<Movie> selectMovies() throws Exception {
+    public List<Movie> selectMovies() {
         List<Movie> movies = new ArrayList<>();
         DataSource dataSource = DataSourceSingleton.getInstance();
         
@@ -59,12 +62,14 @@ public class SqlRepository implements Repository{
                         rs.getDate("MovieBegin"))
                 );
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
         return movies;
     }   
 
     @Override
-    public List<Actor> selectActors() throws Exception{
+    public List<Actor> selectActors() {
         List<Actor> actors = new ArrayList<>();
         DataSource dataSource = DataSourceSingleton.getInstance();
         
@@ -77,6 +82,8 @@ public class SqlRepository implements Repository{
                         rs.getString("FirstName"),
                         rs.getString("LastName")));
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
         return actors;
     }

@@ -14,7 +14,7 @@ import java.util.Optional;
  * @author Alan
  */
 public interface Repository {
-    List<Movie> selectMovies() throws Exception;
+    List<Movie> selectMovies();
 
-    List<Actor> selectActors() throws Exception;
+    List<Actor> selectActors();
 }
