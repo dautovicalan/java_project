@@ -6,7 +6,6 @@ package hr.alan.view.model;
 
 import hr.alan.businessModel.Actor;
 import hr.alan.businessModel.Movie;
-import javax.swing.table.AbstractTableModel;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 

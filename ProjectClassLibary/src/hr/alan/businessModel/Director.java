@@ -8,18 +8,18 @@ package hr.alan.businessModel;
  *
  * @author Alan
  */
-public class Actor {
+public class Director {
     private int id;
     private String firstName;
     private String lastName;
 
-    public Actor(int id, String firstName, String lastName) {
+    public Director(int id, String firstName, String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
-    public Actor(String firstName, String lastName) {
+    public Director(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
     }
@@ -47,6 +47,4 @@ public class Actor {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-    
-    
 }

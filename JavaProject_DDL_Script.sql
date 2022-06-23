@@ -12,17 +12,15 @@ CREATE TABLE Movie
 (
 	Id INT PRIMARY KEY IDENTITY(1,1),
 	Title NVARCHAR(250) NOT NULL,
-	PubDate DATETIME NOT NULL,
+	PubDate NVARCHAR(90) NOT NULL,
 	MovieDescription NVARCHAR(MAX) NOT NULL,
 	OrigTitle NVARCHAR(250) NOT NULL,
 	Duration INT NOT NULL,
 	MovieGenreId INT FOREIGN KEY REFERENCES MovieGenre(Id),
 	MoviePicturePath NVARCHAR(MAX) NULL,
 	MovieLink NVARCHAR(MAX) NULL,
-	MovieBegin DATETIME NULL
+	MovieBegin NVARCHAR(90) NULL
 )
-
-SELECT GETDATE()
 
 CREATE PROC selectMovies
 AS
@@ -30,11 +28,51 @@ BEGIN
 	SELECT * FROM Movie
 END
 
-CREATE PROC selectMovieById
+CREATE PROC selectMovie
 	@movieId INT
 AS
 BEGIN
 	SELECT * FROM Movie WHERE Id = @movieId
+END
+
+ALTER PROC createMovie
+	@title NVARCHAR(250),
+	@pubDate NVARCHAR(90),
+	@description NVARCHAR(MAX),
+	@duration INT,
+	@movieBegin NVARCHAR(90),
+	@moviePicturePath NVARCHAR(MAX),
+	@movieId INT OUTPUT
+AS
+BEGIN
+	INSERT INTO Movie(Title, PubDate, MovieDescription, Duration, MovieBegin, MoviePicturePath)
+	VALUES (@title, @pubDate, @description, @duration, @movieBegin, @moviePicturePath)
+
+	SET @movieId = SCOPE_IDENTITY()
+END
+
+CREATE PROC updateMovie
+	@title NVARCHAR(250),
+	@pubDate NVARCHAR(90),
+	@description NVARCHAR(MAX),
+	@duration INT,
+	@movieBegin NVARCHAR(90),
+	@moviePicturePath NVARCHAR(MAX),
+	@movieId INT
+AS
+BEGIN
+	UPDATE Movie
+	SET Title = @title, PubDate = @pubDate, MovieDescription = @description, Duration = @duration, MovieBegin = @movieBegin, MoviePicturePath = @moviePicturePath
+	WHERE Id = @movieId
+END
+
+CREATE PROCEDURE deleteMovie
+	@movieId INT	 
+AS 
+BEGIN 
+	DELETE  
+	FROM Movie
+	WHERE Id = @movieId
 END
 
 CREATE TABLE MovieGenre
@@ -62,6 +100,12 @@ CREATE TABLE Director
 	FirstName NVARCHAR(25) NOT NULL,
 	LastName NVARCHAR(25) NOT NULL
 )
+
+CREATE PROC selectDirectors
+AS
+BEGIN
+	SELECT * FROM Director
+END
 
 CREATE TABLE MovieCast
 (

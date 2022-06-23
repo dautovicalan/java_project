@@ -8,6 +8,7 @@ import hr.alan.businessModel.Movie;
 import hr.alan.dal.Repository;
 import hr.alan.dal.RepositoryFactory;
 import hr.alan.view.EditActorsPanel;
+import hr.alan.view.EditDirectorsPanel;
 import hr.alan.view.EditMoviesPanel;
 import java.util.List;
 import java.util.logging.Level;
@@ -46,7 +47,7 @@ public class MainForm extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(tpMainPane, javax.swing.GroupLayout.DEFAULT_SIZE, 729, Short.MAX_VALUE)
+                .addComponent(tpMainPane, javax.swing.GroupLayout.DEFAULT_SIZE, 985, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -102,6 +103,7 @@ public class MainForm extends javax.swing.JFrame {
 
     private void initPanels() {
         tpMainPane.add("MOVIES", new EditMoviesPanel());
-        tpMainPane.add("ACTORS", new EditActorsPanel());
+        //tpMainPane.add("DIRECTORS", new EditDirectorsPanel());
+        //tpMainPane.add("ACTORS", new EditActorsPanel());
     }
 }

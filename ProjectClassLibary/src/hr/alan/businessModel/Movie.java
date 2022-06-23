@@ -4,6 +4,8 @@
  */
 package hr.alan.businessModel;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -11,36 +13,33 @@ import java.util.Date;
  * @author Alan
  */
 public class Movie {
+    
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+    
     private int id;
     private String title;
-    private Date pubDate;
+    private LocalDateTime pubDate;
     private String movieDescription;
-    private String origTitle;
     private int duration;
     private String moviePicturePath;
-    private String movieLink;
-    private Date movieBegin;
+    private LocalDateTime movieBegin;
 
-    public Movie(String title, Date pubDate, String movieDescription, String origTitle, int duration, String moviePicturePath, String movieLink, Date movieBegin) {
+    public Movie(String title, LocalDateTime pubDate, String movieDescription, int duration, String moviePicturePath, LocalDateTime movieBegin) {
         this.title = title;
         this.pubDate = pubDate;
         this.movieDescription = movieDescription;
-        this.origTitle = origTitle;
         this.duration = duration;
         this.moviePicturePath = moviePicturePath;
-        this.movieLink = movieLink;
         this.movieBegin = movieBegin;
     }
 
-    public Movie(int id, String title, Date pubDate, String movieDescription, String origTitle, int duration, String moviePicturePath, String movieLink, Date movieBegin) {
+    public Movie(int id, String title, LocalDateTime pubDate, String movieDescription, int duration, String moviePicturePath, LocalDateTime movieBegin) {
         this.id = id;
         this.title = title;
         this.pubDate = pubDate;
         this.movieDescription = movieDescription;
-        this.origTitle = origTitle;
         this.duration = duration;
         this.moviePicturePath = moviePicturePath;
-        this.movieLink = movieLink;
         this.movieBegin = movieBegin;
     }
     
@@ -61,11 +60,11 @@ public class Movie {
         this.title = title;
     }
 
-    public Date getPubDate() {
+    public LocalDateTime getPubDate() {
         return pubDate;
     }
 
-    public void setPubDate(Date pubDate) {
+    public void setPubDate(LocalDateTime pubDate) {
         this.pubDate = pubDate;
     }
 
@@ -75,14 +74,6 @@ public class Movie {
 
     public void setMovieDescription(String movieDescription) {
         this.movieDescription = movieDescription;
-    }
-
-    public String getOrigTitle() {
-        return origTitle;
-    }
-
-    public void setOrigTitle(String origTitle) {
-        this.origTitle = origTitle;
     }
 
     public int getDuration() {
@@ -101,19 +92,11 @@ public class Movie {
         this.moviePicturePath = moviePicturePath;
     }
 
-    public String getMovieLink() {
-        return movieLink;
-    }
-
-    public void setMovieLink(String movieLink) {
-        this.movieLink = movieLink;
-    }
-
-    public Date getMovieBegin() {
+    public LocalDateTime getMovieBegin() {
         return movieBegin;
     }
 
-    public void setMovieBegin(Date movieBegin) {
+    public void setMovieBegin(LocalDateTime movieBegin) {
         this.movieBegin = movieBegin;
     }
 

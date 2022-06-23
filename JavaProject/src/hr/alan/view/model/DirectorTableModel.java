@@ -4,8 +4,8 @@
  */
 package hr.alan.view.model;
 
+import hr.alan.businessModel.Director;
 import hr.alan.businessModel.Movie;
-import javax.swing.table.AbstractTableModel;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
@@ -13,17 +13,16 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author Alan
  */
-public class MovieTableModel extends AbstractTableModel{
-    private static final String[] COLUMN_NAMES = {"Id", "Title", "Publish Date", "Description", "Original Title", "Duration"
-                                                   , "Movie Genre", "Picture Path", "Movie Link", "Movie Begin Date"};
+public class DirectorTableModel extends AbstractTableModel{
+    private static final String[] COLUMN_NAMES = {"Id", "First Name", "Last Name"};
     
-    private List<Movie> movies;
+    private List<Director> movies;
 
-    public MovieTableModel(List<Movie> articles) {
+    public DirectorTableModel(List<Director> articles) {
         this.movies = articles;
     }
 
-    public void setArticles(List<Movie> articles) {
+    public void setArticles(List<Director> articles) {
         this.movies = articles;
         fireTableDataChanged();
     }
@@ -44,24 +43,9 @@ public class MovieTableModel extends AbstractTableModel{
             case 0:
                 return movies.get(rowIndex).getId();
             case 1:
-                return movies.get(rowIndex).getTitle();
+                return movies.get(rowIndex).getFirstName();
             case 2:
-                return movies.get(rowIndex).getPubDate();
-            case 3:
-                return movies.get(rowIndex).getMovieDescription();
-            case 4:
-                return movies.get(rowIndex).getOrigTitle();
-            case 5:
-                return movies.get(rowIndex).getDuration();
-                //return articles.get(rowIndex).getPublishedDate().format(Article.DATE_FORMATTER);
-            case 6:
-                return movies.get(rowIndex).getId();
-            case 7:
-                return movies.get(rowIndex).getMoviePicturePath();
-            case 8:
-                return movies.get(rowIndex).getMovieLink();
-            case 9:
-                return movies.get(rowIndex).getMovieBegin();
+                return movies.get(rowIndex).getLastName();
             default:
                 throw new RuntimeException("No such column");
         }
