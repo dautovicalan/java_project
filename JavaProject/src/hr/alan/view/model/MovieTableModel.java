@@ -19,12 +19,12 @@ public class MovieTableModel extends AbstractTableModel{
     
     private List<Movie> movies;
 
-    public MovieTableModel(List<Movie> articles) {
-        this.movies = articles;
+    public MovieTableModel(List<Movie> movies) {
+        this.movies = movies;
     }
 
-    public void setArticles(List<Movie> articles) {
-        this.movies = articles;
+    public void setArticles(List<Movie> movies) {
+        this.movies = movies;
         fireTableDataChanged();
     }
 
@@ -35,7 +35,7 @@ public class MovieTableModel extends AbstractTableModel{
 
     @Override
     public int getColumnCount() {
-        return Movie.class.getDeclaredFields().length - 1;
+        return Movie.class.getDeclaredFields().length;
     }
 
     @Override
@@ -51,7 +51,6 @@ public class MovieTableModel extends AbstractTableModel{
                 return movies.get(rowIndex).getMovieDescription();
             case 4:
                 return movies.get(rowIndex).getDuration();
-                //return articles.get(rowIndex).getPublishedDate().format(Article.DATE_FORMATTER);
             case 5:
                 return movies.get(rowIndex).getId();
             case 6:

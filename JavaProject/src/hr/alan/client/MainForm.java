@@ -103,7 +103,7 @@ public class MainForm extends javax.swing.JFrame {
 
     private void initPanels() {
         tpMainPane.add("MOVIES", new EditMoviesPanel());
-        //tpMainPane.add("DIRECTORS", new EditDirectorsPanel());
+        tpMainPane.add("DIRECTORS", new EditDirectorsPanel());
         //tpMainPane.add("ACTORS", new EditActorsPanel());
     }
 }

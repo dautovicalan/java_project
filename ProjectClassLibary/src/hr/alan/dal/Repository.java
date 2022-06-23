@@ -21,5 +21,9 @@ public interface Repository {
     Optional<Movie> selectMovie(int id);
     void updateMovie(int id, Movie selectedMovie);
     int createMovie(Movie movie);
-    void deleteArticle(int id);
+    void deleteMovie(int id);
+    Optional<Director> selectDirector(int id);
+    int createDirector(Director director);
+    void updateDirector(int id, Director director);
+    void deleteDirector(int id);
 }

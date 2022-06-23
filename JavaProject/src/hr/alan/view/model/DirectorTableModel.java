@@ -16,36 +16,36 @@ import javax.swing.table.AbstractTableModel;
 public class DirectorTableModel extends AbstractTableModel{
     private static final String[] COLUMN_NAMES = {"Id", "First Name", "Last Name"};
     
-    private List<Director> movies;
+    private List<Director> directors;
 
-    public DirectorTableModel(List<Director> articles) {
-        this.movies = articles;
+    public DirectorTableModel(List<Director> directors) {
+        this.directors = directors;
     }
 
-    public void setArticles(List<Director> articles) {
-        this.movies = articles;
+    public void setArticles(List<Director> directors) {
+        this.directors = directors;
         fireTableDataChanged();
     }
 
     @Override
     public int getRowCount() {
-        return movies.size();
+        return directors.size();
     }
 
     @Override
     public int getColumnCount() {
-        return Movie.class.getDeclaredFields().length - 1;
+        return Director.class.getDeclaredFields().length;
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         switch (columnIndex) {
             case 0:
-                return movies.get(rowIndex).getId();
+                return directors.get(rowIndex).getId();
             case 1:
-                return movies.get(rowIndex).getFirstName();
+                return directors.get(rowIndex).getFirstName();
             case 2:
-                return movies.get(rowIndex).getLastName();
+                return directors.get(rowIndex).getLastName();
             default:
                 throw new RuntimeException("No such column");
         }

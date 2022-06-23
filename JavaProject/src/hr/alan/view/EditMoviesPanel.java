@@ -318,7 +318,6 @@ public class EditMoviesPanel extends javax.swing.JPanel {
 
         } catch (Exception ex) {
             Logger.getLogger(EditMoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
-
         }
     }//GEN-LAST:event_btnAddActionPerformed
 
@@ -372,7 +371,7 @@ public class EditMoviesPanel extends javax.swing.JPanel {
                     Files.delete(Paths.get(selectedMovie.getMoviePicturePath()));
                 }
                 
-                repo.deleteArticle(selectedMovie.getId());
+                repo.deleteMovie(selectedMovie.getId());
                 moviesTableModel.setArticles(repo.selectMovies());
                 
                 clearForm();

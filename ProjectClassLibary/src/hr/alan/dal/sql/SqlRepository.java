@@ -28,13 +28,6 @@ import java.util.logging.Logger;
  */
 public class SqlRepository implements Repository{
     
-    private static final String ID_ARTICLE = "IDArticle";
-    private static final String TITLE = "Title";
-    private static final String LINK = "Link";
-    private static final String DESCRIPTION = "Description";
-    private static final String PICTURE_PATH = "PicturePath";
-    private static final String PUBLISHED_DATE = "PublishedDate";
-
     private static final String CREATE_MOVIE = "{ CALL createMovie (?,?,?,?,?,?,?) }";
     private static final String UPDATE_MOVIE = "{ CALL updateMovie (?,?,?,?,?,?) }";
     private static final String DELETE_MOVIE = "{ CALL deleteMovie (?) }";
@@ -42,6 +35,10 @@ public class SqlRepository implements Repository{
     private static final String SELECT_MOVIE = "{ CALL selectMovie (?) }";
     private static final String SELECT_ACTORS = "{ CALL selectActors }";
     private static final String SELECT_DIRECTORS = "{ CALL selectDirectors }";
+    private static final String SELECT_DIRECTOR = "{ CALL selectDirector (?) }";
+    private static final String CREATE_DIRECTOR = "{ CALL createDirector (?,?,?) }";
+    private static final String UPDATE_DIRECTOR = "{ CALL updateDirector (?,?,?) }";
+    private static final String DELETE_DIRECTOR = "{ CALL deleteDirector (?) }";
 
     @Override
     public List<Movie> selectMovies() {
@@ -75,7 +72,7 @@ public class SqlRepository implements Repository{
         DataSource dataSource = DataSourceSingleton.getInstance();
         
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(SELECT_ACTORS);
+                CallableStatement stmt = con.prepareCall("selectDirectors");
                 ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
@@ -180,13 +177,83 @@ public class SqlRepository implements Repository{
     }
 
     @Override
-    public void deleteArticle(int id) {
+    public void deleteMovie(int id) {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(DELETE_MOVIE)) {
 
             stmt.setInt("@" + "movieId", id);
 
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public Optional<Director> selectDirector(int id) {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(SELECT_DIRECTOR)) {
+            stmt.setInt("@" + "directorId", id);
+            try (ResultSet rs = stmt.executeQuery()) {
+
+                if (rs.next()) {
+                    return Optional.of(
+                            new Director(
+                                    rs.getInt("Id"),
+                                    rs.getString("FirstName"), 
+                                    rs.getString("LastName"))
+                    );
+                }
+
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public int createDirector(Director director) {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(CREATE_DIRECTOR)) {
+            stmt.setString("@" + "firstName", director.getFirstName());
+            stmt.setString("@" + "lastName", director.getLastName());
+            stmt.registerOutParameter("@" + "directorId", Types.INTEGER);
+
+            stmt.executeUpdate();
+            return stmt.getInt("@" + "directorId");
+        } catch (SQLException ex) {
+            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    @Override
+    public void updateDirector(int id, Director director) {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(UPDATE_DIRECTOR)) {
+            stmt.setString("@" + "firstName", director.getFirstName());
+            stmt.setString("@" + "lastName", director.getLastName());
+            stmt.setInt("@" + "directorId", id);
+
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public void deleteDirector(int id) {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(DELETE_DIRECTOR)) {
+            stmt.setInt("@" + "directorId", id);
             stmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);

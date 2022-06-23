@@ -107,6 +107,45 @@ BEGIN
 	SELECT * FROM Director
 END
 
+CREATE PROC selectDirector
+	@directorId INT
+AS
+BEGIN
+	SELECT * FROM Director WHERE Id = @directorId
+END
+
+CREATE PROC createDirector
+	@firstName NVARCHAR(25),
+	@lastName NVARCHAR(25),
+	@directorId INT OUTPUT
+AS
+BEGIN
+	INSERT INTO Director
+	VALUES (@firstName, @lastName)
+
+	SET @directorId = SCOPE_IDENTITY()
+END
+
+CREATE PROC updateDirector
+	@firstName NVARCHAR(25),
+	@lastName NVARCHAR(25),
+	@directorId INT
+AS
+BEGIN
+	UPDATE Director
+	SET FirstName = @firstName, LastName = @lastName
+	WHERE Id = @directorId
+END
+
+CREATE PROCEDURE deleteDirector
+	@directorId INT	 
+AS 
+BEGIN 
+	DELETE  
+	FROM Director
+	WHERE Id = @directorId
+END
+
 CREATE TABLE MovieCast
 (
 	Id INT PRIMARY KEY IDENTITY(1,1),
