@@ -5,6 +5,7 @@
 package hr.alan.dal.sql;
 
 import hr.alan.businessModel.Actor;
+import hr.alan.businessModel.AppUser;
 import hr.alan.businessModel.Director;
 import hr.alan.businessModel.Movie;
 import hr.alan.dal.Repository;
@@ -43,6 +44,9 @@ public class SqlRepository implements Repository{
     private static final String CREATE_DIRECTOR = "{ CALL createDirector (?,?,?) }";
     private static final String UPDATE_DIRECTOR = "{ CALL updateDirector (?,?,?) }";
     private static final String DELETE_DIRECTOR = "{ CALL deleteDirector (?) }";
+    
+    private static final String REGISTER_USER = "{ CALL registerUser (?,?,?) }";
+    private static final String AUTH_USER = "{ CALL authUser (?,?) }";
 
     @Override
     public List<Movie> selectMovies() {
@@ -332,5 +336,48 @@ public class SqlRepository implements Repository{
         } catch (SQLException ex) {
             Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @Override
+    public int registerUser(AppUser user) {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(REGISTER_USER)) {
+            stmt.setString("@" + "username", user.getUserName());
+            stmt.setString("@" + "userPassword", user.getUserPassword());
+            stmt.registerOutParameter("@" + "userId", Types.INTEGER);
+
+            stmt.executeUpdate();
+            return stmt.getInt("@" + "userId");
+        } catch (SQLException ex) {
+            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    @Override
+    public Optional<AppUser> authUser(AppUser user) {
+       DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(AUTH_USER)) {
+            stmt.setString("@" + "username", user.getUserName());
+            stmt.setString("@" + "userPassword", user.getUserPassword());
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(
+                            new AppUser(
+                                    rs.getInt("Id"),
+                                    rs.getString("UserName"), 
+                                    rs.getString("UserPassword"))
+                    );
+                }
+
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return Optional.empty();
     }
 }

@@ -196,8 +196,35 @@ CREATE TABLE AppUser
 (
 	Id INT PRIMARY KEY IDENTITY(1,1),
 	UserName NVARCHAR(20) UNIQUE NOT NULL,
-	UserPassword NVARCHAR(20) NOT NULL
+	UserPassword NVARCHAR(MAX) NOT NULL
 )
+
+ALTER PROC registerUser
+	@username NVARCHAR(20),
+	@userPassword NVARCHAR(MAX),
+	@userId INT OUTPUT
+AS
+BEGIN
+	IF EXISTS(SELECT * FROM AppUser WHERE UserName = @username)
+		BEGIN
+			SET @userId = -1
+		END
+	ELSE
+		BEGIN
+			INSERT INTO AppUser
+			VALUES(@username, @userPassword)
+
+			SET @userId = SCOPE_IDENTITY()
+		END
+END
+
+CREATE PROC authUser
+	@username NVARCHAR(20),
+	@userPassword NVARCHAR(MAX)
+AS
+BEGIN
+	SELECT * FROM AppUser WHERE UserName = @username AND UserPassword = @userPassword
+END
 
 CREATE TABLE AppAdmin
 (
@@ -205,3 +232,5 @@ CREATE TABLE AppAdmin
 	UserName NVARCHAR(20) UNIQUE NOT NULL,
 	UserPassword NVARCHAR(20) NOT NULL
 )
+
+--Implement adding admin user later here

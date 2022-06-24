@@ -1,29 +1,25 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package hr.alan.client;
 
-import hr.alan.businessModel.Movie;
-import hr.alan.dal.Repository;
-import hr.alan.dal.RepositoryFactory;
-import hr.alan.view.EditActorsPanel;
-import hr.alan.view.EditDirectorsPanel;
-import hr.alan.view.EditMoviesPanel;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import hr.alan.view.LoginPanel;
+import hr.alan.view.RegisterPanel;
+import hr.algebra.utils.MessageUtils;
+import java.awt.event.WindowEvent;
 
 /**
  *
  * @author Alan
  */
-public class MainForm extends javax.swing.JFrame {
+public class LoginForm extends javax.swing.JFrame {
 
     /**
-     * Creates new form MainForm
+     * Creates new form LoginForm
      */
-    public MainForm() {
+    public LoginForm() {
         initComponents();
         initPanels();
     }
@@ -47,14 +43,14 @@ public class MainForm extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(tpMainPane, javax.swing.GroupLayout.DEFAULT_SIZE, 985, Short.MAX_VALUE)
+                .addComponent(tpMainPane, javax.swing.GroupLayout.DEFAULT_SIZE, 628, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(tpMainPane, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+                .addComponent(tpMainPane, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -65,7 +61,7 @@ public class MainForm extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main() {
+    public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -79,20 +75,20 @@ public class MainForm extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainForm().setVisible(true);
+                new LoginForm().setVisible(true);
             }
         });
     }
@@ -102,9 +98,8 @@ public class MainForm extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void initPanels() {
-        tpMainPane.add("MOVIES", new EditMoviesPanel());
-        tpMainPane.add("DIRECTORS", new EditDirectorsPanel());
-        tpMainPane.add("ACTORS", new EditActorsPanel());
+        tpMainPane.add("LOGIN", new LoginPanel(this));
+        tpMainPane.add("REGISTER", new RegisterPanel(this));
     }
-    
+
 }

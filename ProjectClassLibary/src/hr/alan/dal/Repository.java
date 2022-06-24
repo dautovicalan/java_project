@@ -5,6 +5,7 @@
 package hr.alan.dal;
 
 import hr.alan.businessModel.Actor;
+import hr.alan.businessModel.AppUser;
 import hr.alan.businessModel.Director;
 import hr.alan.businessModel.Movie;
 import java.util.List;
@@ -30,4 +31,7 @@ public interface Repository {
     void updateActor(int id, Actor selectedActor);
     int createActor(Actor actor);
     void deleteActor(int id);
+    
+    int registerUser(AppUser user);
+    Optional<AppUser> authUser(AppUser user);
 }
