@@ -94,6 +94,45 @@ BEGIN
 	SELECT * FROM Actor
 END
 
+CREATE PROC selectActor
+	@actorId INT
+AS
+BEGIN
+	SELECT * FROM Actor WHERE Id = @actorId
+END
+
+CREATE PROC createActor
+	@firstName NVARCHAR(25),
+	@lastName NVARCHAR(25),
+	@actorId INT OUTPUT
+AS
+BEGIN
+	INSERT INTO Actor
+	VALUES (@firstName, @lastName)
+
+	SET @actorId = SCOPE_IDENTITY()
+END
+
+CREATE PROC updateActor
+	@firstName NVARCHAR(25),
+	@lastName NVARCHAR(25),
+	@actorId INT
+AS
+BEGIN
+	UPDATE Actor
+	SET FirstName = @firstName, LastName = @lastName
+	WHERE Id = @actorId
+END
+
+CREATE PROCEDURE deleteActor
+	@actorId INT	 
+AS 
+BEGIN 
+	DELETE  
+	FROM Actor
+	WHERE Id = @actorId
+END
+
 CREATE TABLE Director
 (
 	Id INT PRIMARY KEY IDENTITY(1,1),

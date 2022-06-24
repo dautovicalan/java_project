@@ -34,6 +34,10 @@ public class SqlRepository implements Repository{
     private static final String SELECT_MOVIES = "{ CALL selectMovies }";
     private static final String SELECT_MOVIE = "{ CALL selectMovie (?) }";
     private static final String SELECT_ACTORS = "{ CALL selectActors }";
+    private static final String SELECT_ACTOR = "{ CALL selectActor (?) }";
+    private static final String CREATE_ACTOR = "{ CALL createActor (?,?,?) }";
+    private static final String UPDATE_ACTOR = "{ CALL updateActor (?,?,?) }";
+    private static final String DELETE_ACTOR = "{ CALL deleteActor (?) }";
     private static final String SELECT_DIRECTORS = "{ CALL selectDirectors }";
     private static final String SELECT_DIRECTOR = "{ CALL selectDirector (?) }";
     private static final String CREATE_DIRECTOR = "{ CALL createDirector (?,?,?) }";
@@ -72,7 +76,7 @@ public class SqlRepository implements Repository{
         DataSource dataSource = DataSourceSingleton.getInstance();
         
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall("selectDirectors");
+                CallableStatement stmt = con.prepareCall(SELECT_ACTORS);
                 ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
@@ -254,6 +258,76 @@ public class SqlRepository implements Repository{
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(DELETE_DIRECTOR)) {
             stmt.setInt("@" + "directorId", id);
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public Optional<Actor> selectActor(int id) {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(SELECT_ACTOR)) {
+            stmt.setInt("@" + "actorId", id);
+            try (ResultSet rs = stmt.executeQuery()) {
+
+                if (rs.next()) {
+                    return Optional.of(
+                            new Actor(
+                                    rs.getInt("Id"),
+                                    rs.getString("FirstName"), 
+                                    rs.getString("LastName"))
+                    );
+                }
+
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public void updateActor(int id, Actor actor) {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(UPDATE_ACTOR)) {
+            stmt.setString("@" + "firstName", actor.getFirstName());
+            stmt.setString("@" + "lastName", actor.getLastName());
+            stmt.setInt("@" + "actorId", id);
+
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public int createActor(Actor actor) {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(CREATE_ACTOR)) {
+            stmt.setString("@" + "firstName", actor.getFirstName());
+            stmt.setString("@" + "lastName", actor.getLastName());
+            stmt.registerOutParameter("@" + "actorId", Types.INTEGER);
+
+            stmt.executeUpdate();
+            return stmt.getInt("@" + "actorId");
+        } catch (SQLException ex) {
+            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    @Override
+    public void deleteActor(int id) {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(DELETE_ACTOR)) {
+            stmt.setInt("@" + "actorId", id);
             stmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);

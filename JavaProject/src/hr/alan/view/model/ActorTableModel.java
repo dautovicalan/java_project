@@ -34,7 +34,7 @@ public class ActorTableModel extends AbstractTableModel{
 
     @Override
     public int getColumnCount() {
-        return Movie.class.getDeclaredFields().length - 1;
+        return Actor.class.getDeclaredFields().length;
     }
 
     @Override

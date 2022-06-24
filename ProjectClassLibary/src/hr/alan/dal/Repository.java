@@ -26,4 +26,8 @@ public interface Repository {
     int createDirector(Director director);
     void updateDirector(int id, Director director);
     void deleteDirector(int id);
+    Optional<Actor> selectActor(int id);
+    void updateActor(int id, Actor selectedActor);
+    int createActor(Actor actor);
+    void deleteActor(int id);
 }
