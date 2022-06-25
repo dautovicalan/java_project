@@ -8,6 +8,8 @@ import hr.alan.businessModel.Actor;
 import hr.alan.businessModel.AppUser;
 import hr.alan.businessModel.Director;
 import hr.alan.businessModel.Movie;
+import hr.alan.businessModel.MovieCast;
+import hr.alan.businessModel.Person;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,4 +36,7 @@ public interface Repository {
     
     int registerUser(AppUser user);
     Optional<AppUser> authUser(AppUser user);
+    void createCastActor(int movieId, Actor actor);
+    void createCastDirector(int movieId, Director director);
+    List<MovieCast> selectMovieCast(int movieId);
 }

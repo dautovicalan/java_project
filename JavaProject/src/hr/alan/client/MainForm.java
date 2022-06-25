@@ -7,6 +7,7 @@ package hr.alan.client;
 import hr.alan.businessModel.Movie;
 import hr.alan.dal.Repository;
 import hr.alan.dal.RepositoryFactory;
+import hr.alan.view.DragAndDropPanel;
 import hr.alan.view.EditActorsPanel;
 import hr.alan.view.EditDirectorsPanel;
 import hr.alan.view.EditMoviesPanel;
@@ -105,6 +106,7 @@ public class MainForm extends javax.swing.JFrame {
         tpMainPane.add("MOVIES", new EditMoviesPanel());
         tpMainPane.add("DIRECTORS", new EditDirectorsPanel());
         tpMainPane.add("ACTORS", new EditActorsPanel());
+        tpMainPane.add("DRAG N DROP", new DragAndDropPanel());
     }
     
 }

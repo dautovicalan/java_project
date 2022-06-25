@@ -8,6 +8,8 @@ import hr.alan.businessModel.Actor;
 import hr.alan.businessModel.AppUser;
 import hr.alan.businessModel.Director;
 import hr.alan.businessModel.Movie;
+import hr.alan.businessModel.MovieCast;
+import hr.alan.businessModel.Person;
 import hr.alan.dal.Repository;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +44,12 @@ public class SqlRepository implements Repository{
     private static final String SELECT_DIRECTORS = "{ CALL selectDirectors }";
     private static final String SELECT_DIRECTOR = "{ CALL selectDirector (?) }";
     private static final String CREATE_DIRECTOR = "{ CALL createDirector (?,?,?) }";
-    private static final String UPDATE_DIRECTOR = "{ CALL updateDirector (?,?,?) }";
     private static final String DELETE_DIRECTOR = "{ CALL deleteDirector (?) }";
+    private static final String UPDATE_DIRECTOR = "{ CALL updateDirector (?,?,?) }";
+    private static final String CREATE_CAST_ACTOR = "{ CALL createCastActor (?,?) }";
+    private static final String CREATE_CAST_DIRECTOR = "{ CALL createCastDirector (?,?) }";
+    private static final String SELECT_MOVIE_CAST = "{ CALL selectMovieCast (?) }";
+    
     
     private static final String REGISTER_USER = "{ CALL registerUser (?,?,?) }";
     private static final String AUTH_USER = "{ CALL authUser (?,?) }";
@@ -379,5 +385,55 @@ public class SqlRepository implements Repository{
         }
 
         return Optional.empty();
+    }
+
+    @Override
+    public void createCastActor(int movieId, Actor actor) {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(CREATE_CAST_ACTOR)) {
+            stmt.setInt("@" + "actorId", actor.getId());
+            stmt.setInt("@" + "movieId", movieId);
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public void createCastDirector(int movieId, Director director) {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(CREATE_CAST_DIRECTOR)) {
+            stmt.setInt("@" + "directorId", director.getId());
+            stmt.setInt("@" + "movieId", movieId);
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public List<MovieCast> selectMovieCast(int movieId) {
+       List<MovieCast> movieCast = new ArrayList<>();
+       DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(SELECT_MOVIE_CAST)) {
+            stmt.setInt("@" + "movieId", movieId);
+            try (ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    movieCast.add(
+                            new MovieCast(new Actor(rs.getString("ActorFirstName"), 
+                                    rs.getString("ActorLastName")), new Director
+                                (rs.getString("DirectorFirstName"), rs.getString("DirectorLastName"))));
+                }
+
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return movieCast;
     }
 }

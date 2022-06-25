@@ -5,8 +5,11 @@
  */
 package hr.alan.client;
 
+import hr.alan.parser.RSSFeedParser;
 import hr.alan.view.LoginPanel;
 import hr.alan.view.RegisterPanel;
+import hr.alan.xmlModels.Channel;
+import hr.alan.xmlModels.Item;
 import hr.algebra.utils.MessageUtils;
 import java.awt.event.WindowEvent;
 
@@ -20,6 +23,12 @@ public class LoginForm extends javax.swing.JFrame {
      * Creates new form LoginForm
      */
     public LoginForm() {
+        RSSFeedParser parser = new RSSFeedParser("https://www.blitz-cinestar.hr/rss.aspx?najava=1");
+        Channel feeds = parser.readFeed();
+        System.out.println(feeds);
+        for (Item object : feeds.getItem()) {
+            System.out.println(object);
+        }
         initComponents();
         initPanels();
     }

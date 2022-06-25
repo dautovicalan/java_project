@@ -233,4 +233,50 @@ CREATE TABLE AppAdmin
 	UserPassword NVARCHAR(20) NOT NULL
 )
 
+CREATE TABLE MovieCast
+(
+	ActorId INT FOREIGN KEY REFERENCES Actor(Id),
+	DirectorId INT FOREIGN KEY REFERENCES Director(Id),
+	MovieId INT FOREIGN KEY REFERENCES Movie(Id)
+)
+
+CREATE PROC createCast
+	@actorId INT,
+	@directorId INT,
+	@movieId INT
+AS
+BEGIN
+	INSERT INTO MovieCast
+	VALUES(@actorId, @directorId, @movieId)
+END
+
+CREATE PROC createCastActor
+	@actorId INT,
+	@movieId INT
+AS
+BEGIN
+	INSERT INTO MovieCast (ActorId, MovieId)
+	VALUES(@actorId, @movieId)
+END
+
+CREATE PROC createCastDirector
+	@directorId INT,
+	@movieId INT
+AS
+BEGIN
+	INSERT INTO MovieCast (DirectorId, MovieId)
+	VALUES(@directorId, @movieId)
+END
+
+CREATE PROC selectMovieCast
+	@movieId INT
+AS
+BEGIN
+	SELECT Actor.FirstName AS ActorFirstName, Actor.LastName AS ActorLastName, Director.FirstName AS DirectorFirstName,
+	Director.LastName AS DirectorLastName
+	FROM MovieCast
+	INNER JOIN Actor ON Actor.Id = MovieCast.ActorId
+	INNER JOIN Director ON Director.Id = MovieCast.DirectorId
+	WHERE MovieId = @movieId
+END
 --Implement adding admin user later here
