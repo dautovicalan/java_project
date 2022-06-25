@@ -6,12 +6,16 @@
 package hr.alan.client;
 
 import hr.alan.parser.RSSFeedParser;
+import hr.alan.view.AdminLoginPanel;
 import hr.alan.view.LoginPanel;
 import hr.alan.view.RegisterPanel;
 import hr.alan.xmlModels.Channel;
 import hr.alan.xmlModels.Item;
 import hr.algebra.utils.MessageUtils;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -22,13 +26,14 @@ public class LoginForm extends javax.swing.JFrame {
     /**
      * Creates new form LoginForm
      */
-    public LoginForm() {
-        RSSFeedParser parser = new RSSFeedParser("https://www.blitz-cinestar.hr/rss.aspx?najava=1");
-        Channel feeds = parser.readFeed();
-        System.out.println(feeds);
-        for (Item object : feeds.getItem()) {
-            System.out.println(object);
-        }
+    public LoginForm() throws IOException {
+        //RSSFeedParser parser = new RSSFeedParser("https://www.blitz-cinestar.hr/rss.aspx?id=1734&najava=1");
+        //Channel feeds = parser.readFeed();
+        //System.out.println(feeds);
+        //for (Item object : feeds.getItem()) {
+          //  System.out.println(object);
+        //}
+        
         initComponents();
         initPanels();
     }
@@ -97,7 +102,11 @@ public class LoginForm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new LoginForm().setVisible(true);
+                try {
+                    new LoginForm().setVisible(true);
+                } catch (IOException ex) {
+                    Logger.getLogger(LoginForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -109,6 +118,7 @@ public class LoginForm extends javax.swing.JFrame {
     private void initPanels() {
         tpMainPane.add("LOGIN", new LoginPanel(this));
         tpMainPane.add("REGISTER", new RegisterPanel(this));
+        tpMainPane.add("ADMIN", new AdminLoginPanel(this));
     }
 
 }

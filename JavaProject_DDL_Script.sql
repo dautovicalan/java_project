@@ -233,6 +233,14 @@ CREATE TABLE AppAdmin
 	UserPassword NVARCHAR(20) NOT NULL
 )
 
+CREATE PROC authAdmin
+	@username NVARCHAR(20),
+	@userPassword NVARCHAR(MAX)
+AS
+BEGIN
+	SELECT * FROM AppAdmin WHERE UserName = @username AND UserPassword = @userPassword
+END
+
 CREATE TABLE MovieCast
 (
 	ActorId INT FOREIGN KEY REFERENCES Actor(Id),
@@ -279,4 +287,7 @@ BEGIN
 	INNER JOIN Director ON Director.Id = MovieCast.DirectorId
 	WHERE MovieId = @movieId
 END
+
 --Implement adding admin user later here
+INSERT INTO AppAdmin
+VALUES('admin', '123456789')

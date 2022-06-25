@@ -39,4 +39,6 @@ public interface Repository {
     void createCastActor(int movieId, Actor actor);
     void createCastDirector(int movieId, Director director);
     List<MovieCast> selectMovieCast(int movieId);
+
+    Optional<AppUser> authAdmin(AppUser user);
 }

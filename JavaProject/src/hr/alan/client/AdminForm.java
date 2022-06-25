@@ -7,6 +7,13 @@ package hr.alan.client;
 
 import hr.alan.parser.RSSFeedParser;
 import hr.alan.xmlModels.Channel;
+import hr.alan.xmlModels.Item;
+import hr.algebra.utils.MessageUtils;
+import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 
 /**
  *
@@ -14,12 +21,17 @@ import hr.alan.xmlModels.Channel;
  */
 public class AdminForm extends javax.swing.JFrame {
 
+    private static final String RSS_FEED = "https://www.blitz-cinestar.hr/rss.aspx?id=1734&najava=1";
     /**
      * Creates new form AdminForm
      */
+    private RSSFeedParser parser;
+    private List<Item> parsedItems;
+    private final DefaultListModel<Item> parsedItemsModel = new DefaultListModel<>();
+    
     public AdminForm() {
-   
         initComponents();
+        init();
     }
 
     /**
@@ -31,17 +43,51 @@ public class AdminForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        lsParsedData = new javax.swing.JList<>();
+        btnDeleteAll = new javax.swing.JButton();
+        btnUploadData = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("ADMIN APP");
+
+        jScrollPane1.setViewportView(lsParsedData);
+
+        btnDeleteAll.setText("Delete Everything");
+
+        btnUploadData.setText("Upload new Movies");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 967, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(522, Short.MAX_VALUE)
+                .addComponent(btnDeleteAll, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(232, 232, 232))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(145, 145, 145)
+                    .addComponent(btnUploadData, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(609, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 568, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addComponent(btnDeleteAll, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(36, 36, 36))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap(445, Short.MAX_VALUE)
+                    .addComponent(btnUploadData, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(31, 31, 31)))
         );
 
         pack();
@@ -51,7 +97,7 @@ public class AdminForm extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main() {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -84,5 +130,32 @@ public class AdminForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnDeleteAll;
+    private javax.swing.JButton btnUploadData;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JList<Item> lsParsedData;
     // End of variables declaration//GEN-END:variables
+
+    private void init() {
+        try {
+            initParser();
+            loadParsedItems();
+        } catch (IOException ex) {
+            Logger.getLogger(AdminForm.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage("Error", "Something went wrong");
+            System.exit(1);
+        }
+    }
+
+    private void initParser() throws IOException {
+        parser = new RSSFeedParser(RSS_FEED);
+    }
+
+    private void loadParsedItems() {
+        parsedItemsModel.clear();
+        parsedItems = parser.readFeed().getItem();
+        
+        parsedItems.forEach(parsedItemsModel::addElement);
+        lsParsedData.setModel(parsedItemsModel);
+    }
 }

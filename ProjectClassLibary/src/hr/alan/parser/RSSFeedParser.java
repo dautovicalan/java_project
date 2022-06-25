@@ -52,14 +52,14 @@ public class RSSFeedParser {
     static final String AUTHOR = "author";
     static final String GUID = "guid";
 
-    final URL url;
+    final HttpURLConnection url;
 
-    public RSSFeedParser(String feedUrl) {
+    public RSSFeedParser(String feedUrl) throws IOException {
         try {
-            this.url = new URL(feedUrl);
+            this.url = UrlConnectionFactory.getHttpUrlConnection(feedUrl);            
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
-        }
+        } 
     }
 
     public Channel readFeed() {
@@ -110,6 +110,12 @@ public class RSSFeedParser {
                             break;
                         case LAST_BUILD_DATE:
                             lastBuildDate = getCharacterData(event, eventReader);
+                            break;
+                        case "h2":
+                            System.out.println(getCharacterData(event, eventReader));
+                            break;
+                        case "a":
+                            System.out.println(getCharacterData(event, eventReader));
                             break;
                         case TTL:
                             ttl = getCharacterData(event, eventReader);
@@ -200,7 +206,7 @@ public class RSSFeedParser {
 
     private InputStream read() {
         try {
-            return url.openStream();
+            return url.getInputStream();
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }

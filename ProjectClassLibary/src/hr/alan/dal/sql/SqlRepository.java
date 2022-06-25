@@ -53,6 +53,8 @@ public class SqlRepository implements Repository{
     
     private static final String REGISTER_USER = "{ CALL registerUser (?,?,?) }";
     private static final String AUTH_USER = "{ CALL authUser (?,?) }";
+    
+    private static final String AUTH_ADMIN = "{ CALL authAdmin (?,?) }";
 
     @Override
     public List<Movie> selectMovies() {
@@ -435,5 +437,31 @@ public class SqlRepository implements Repository{
             Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
         return movieCast;
+    }
+
+    @Override
+    public Optional<AppUser> authAdmin(AppUser user) {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(AUTH_ADMIN)) {
+            stmt.setString("@" + "username", user.getUserName());
+            stmt.setString("@" + "userPassword", user.getUserPassword());
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(
+                            new AppUser(
+                                    rs.getInt("Id"),
+                                    rs.getString("UserName"), 
+                                    rs.getString("UserPassword"))
+                    );
+                }
+
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return Optional.empty();
     }
 }

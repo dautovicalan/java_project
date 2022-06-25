@@ -18,7 +18,9 @@ public class UrlConnectionFactory {
     private static final int TIMEOUT = 10000;
     private static final String REQUEST_METHOD = "GET";
     private static final String USER_AGENT = "User-Agent";
+    private static final String CONTENT_TYPE = "Content-Type";
     private static final String MOZILLA = "Mozilla/5.0";
+    private static final String XML_TYPE = "text/xml; charset=utf-8";
     
     private UrlConnectionFactory(){
     }
@@ -30,6 +32,7 @@ public class UrlConnectionFactory {
         con.setReadTimeout(TIMEOUT);
         con.setRequestMethod(REQUEST_METHOD);
         con.addRequestProperty(USER_AGENT, MOZILLA);
+        con.addRequestProperty(CONTENT_TYPE, XML_TYPE);
         return con;
     }
 }
