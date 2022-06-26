@@ -288,6 +288,23 @@ BEGIN
 	WHERE MovieId = @movieId
 END
 
---Implement adding admin user later here
-INSERT INTO AppAdmin
-VALUES('admin', '123456789')
+CREATE PROC deleteAllDBData
+AS
+BEGIN
+	-- disable referential integrity
+	EXEC sp_MSForEachTable 'ALTER TABLE ? NOCHECK CONSTRAINT ALL' 
+
+	EXEC sp_MSForEachTable 'DELETE FROM ?' 
+
+	-- enable referential integrity again 
+	EXEC sp_MSForEachTable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT ALL' 
+END
+
+CREATE PROC createInitAppAdmin
+AS
+BEGIN
+	INSERT INTO AppAdmin
+	VALUES('admin', '123456789')
+END
+
+EXEC createInitAppAdmin

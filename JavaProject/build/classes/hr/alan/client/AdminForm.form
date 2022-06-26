@@ -83,11 +83,17 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Delete Everything"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDeleteAllActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnUploadData">
       <Properties>
         <Property name="text" type="java.lang.String" value="Upload new Movies"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnUploadDataActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

@@ -24,6 +24,7 @@ public interface Repository {
     Optional<Movie> selectMovie(int id);
     void updateMovie(int id, Movie selectedMovie);
     int createMovie(Movie movie);
+    void createMovies(List<Movie> movies) throws Exception;
     void deleteMovie(int id);
     Optional<Director> selectDirector(int id);
     int createDirector(Director director);
@@ -41,4 +42,6 @@ public interface Repository {
     List<MovieCast> selectMovieCast(int movieId);
 
     Optional<AppUser> authAdmin(AppUser user);
+
+    void deleteAllDBData();
 }

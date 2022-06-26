@@ -109,5 +109,15 @@ public class FileUtils {
         }
         return Optional.empty();
     }
+    
+    public static void deleteAllPictures(){
+        File dir = new File("assets");
+        
+        for (File files : dir.listFiles()) {
+            if (!files.isDirectory()) {
+                files.delete();
+            }
+        }
+    }
 
 }

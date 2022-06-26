@@ -5,11 +5,17 @@
  */
 package hr.alan.client;
 
+import hr.alan.businessModel.Movie;
+import hr.alan.dal.Repository;
+import hr.alan.dal.RepositoryFactory;
 import hr.alan.parser.RSSFeedParser;
 import hr.alan.xmlModels.Channel;
 import hr.alan.xmlModels.Item;
+import hr.algebra.utils.DatabasePreparerUtils;
+import hr.algebra.utils.FileUtils;
 import hr.algebra.utils.MessageUtils;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,6 +33,8 @@ public class AdminForm extends javax.swing.JFrame {
      */
     private RSSFeedParser parser;
     private List<Item> parsedItems;
+    private Repository repo;
+    
     private final DefaultListModel<Item> parsedItemsModel = new DefaultListModel<>();
     
     public AdminForm() {
@@ -54,8 +62,18 @@ public class AdminForm extends javax.swing.JFrame {
         jScrollPane1.setViewportView(lsParsedData);
 
         btnDeleteAll.setText("Delete Everything");
+        btnDeleteAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteAllActionPerformed(evt);
+            }
+        });
 
         btnUploadData.setText("Upload new Movies");
+        btnUploadData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUploadDataActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -93,6 +111,19 @@ public class AdminForm extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnDeleteAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteAllActionPerformed
+        handleDeleteEverything();
+    }//GEN-LAST:event_btnDeleteAllActionPerformed
+
+    private void btnUploadDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploadDataActionPerformed
+        try {
+            uploadAllFiles();
+        } catch (Exception ex) {
+            Logger.getLogger(AdminForm.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage("Error", "Something went wrong");
+        }
+    }//GEN-LAST:event_btnUploadDataActionPerformed
 
     /**
      * @param args the command line arguments
@@ -138,6 +169,7 @@ public class AdminForm extends javax.swing.JFrame {
 
     private void init() {
         try {
+            initRepo();
             initParser();
             loadParsedItems();
         } catch (IOException ex) {
@@ -157,5 +189,22 @@ public class AdminForm extends javax.swing.JFrame {
         
         parsedItems.forEach(parsedItemsModel::addElement);
         lsParsedData.setModel(parsedItemsModel);
+    }
+
+    private void initRepo() {
+        repo = RepositoryFactory.getRepository();
+    }
+
+    private void handleDeleteEverything() {
+        repo.deleteAllDBData();
+        FileUtils.deleteAllPictures();
+    }
+
+    private void uploadAllFiles() throws IOException, Exception {
+        List<Movie> movies = new ArrayList<>();
+        for (Item parsedItem : parsedItems) {
+            movies.add(DatabasePreparerUtils.prepareMovie(parsedItem));
+        }
+        repo.createMovies(movies);
     }
 }

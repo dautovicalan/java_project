@@ -111,12 +111,6 @@ public class RSSFeedParser {
                         case LAST_BUILD_DATE:
                             lastBuildDate = getCharacterData(event, eventReader);
                             break;
-                        case "h2":
-                            System.out.println(getCharacterData(event, eventReader));
-                            break;
-                        case "a":
-                            System.out.println(getCharacterData(event, eventReader));
-                            break;
                         case TTL:
                             ttl = getCharacterData(event, eventReader);
                             break;
@@ -133,7 +127,7 @@ public class RSSFeedParser {
                             trajanje = getCharacterData(event, eventReader);
                             break;
                         case ZANR:
-                            trajanje = getCharacterData(event, eventReader);
+                            zanr = getCharacterData(event, eventReader);
                             break;
                         case PLAKAT:
                             plakat = getCharacterData(event, eventReader);

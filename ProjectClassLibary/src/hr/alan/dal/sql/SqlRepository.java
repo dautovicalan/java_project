@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 public class SqlRepository implements Repository{
     
     private static final String CREATE_MOVIE = "{ CALL createMovie (?,?,?,?,?,?,?) }";
-    private static final String UPDATE_MOVIE = "{ CALL updateMovie (?,?,?,?,?,?) }";
+    private static final String UPDATE_MOVIE = "{ CALL updateMovie (?,?,?,?,?,?,?) }";
     private static final String DELETE_MOVIE = "{ CALL deleteMovie (?) }";
     private static final String SELECT_MOVIES = "{ CALL selectMovies }";
     private static final String SELECT_MOVIE = "{ CALL selectMovie (?) }";
@@ -55,6 +55,8 @@ public class SqlRepository implements Repository{
     private static final String AUTH_USER = "{ CALL authUser (?,?) }";
     
     private static final String AUTH_ADMIN = "{ CALL authAdmin (?,?) }";
+    
+    private static final String DELETE_ALL_DB_DATA = "{ CALL deleteAllDBData }";
 
     @Override
     public List<Movie> selectMovies() {
@@ -190,6 +192,26 @@ public class SqlRepository implements Repository{
             Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 0;
+    }
+    
+    @Override
+    public void createMovies(List<Movie> movies) throws Exception {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(CREATE_MOVIE)) {
+
+            for (Movie movie : movies) {
+                stmt.setString("@" + "title", movie.getTitle());
+                stmt.setString("@" + "pubDate", movie.getPubDate().format(Movie.DATE_FORMATTER));
+                stmt.setString("@" + "description", movie.getMovieDescription());
+                stmt.setInt("@" + "duration", movie.getDuration());
+                stmt.setString("@" + "movieBegin", movie.getMovieBegin().format(Movie.DATE_FORMATTER));
+                stmt.setString("@" + "moviePicturePath", movie.getMoviePicturePath());
+                stmt.registerOutParameter("@" + "movieId", Types.INTEGER);
+
+                stmt.executeUpdate();
+            }
+        }
     }
 
     @Override
@@ -463,5 +485,16 @@ public class SqlRepository implements Repository{
         }
 
         return Optional.empty();
+    }
+
+    @Override
+    public void deleteAllDBData() {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(DELETE_ALL_DB_DATA)) {
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

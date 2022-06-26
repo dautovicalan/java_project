@@ -3,9 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Prog/School_Projects/big-semester/java_project/JavaProject/src/hr/alan/view/EditMoviesPanel.java</file>
-            <file>file:/D:/Prog/School_Projects/big-semester/java_project/JavaProject/src/hr/alan/view/EditDirectorsPanel.java</file>
-            <file>file:/D:/Prog/School_Projects/big-semester/java_project/JavaProject/src/hr/alan/client/MainForm.java</file>
+            <file>file:/D:/Prog/School_Projects/big-semester/java_project/JavaProject/src/hr/alan/client/AdminForm.java</file>
+            <file>file:/D:/Prog/School_Projects/big-semester/java_project/JavaProject/src/hr/alan/view/AdminLoginPanel.java</file>
+            <file>file:/D:/Prog/School_Projects/big-semester/java_project/JavaProject/src/hr/alan/view/DragAndDropPanel.java</file>
+            <file>file:/D:/Prog/School_Projects/big-semester/java_project/JavaProject/src/hr/alan/client/LoginForm.java</file>
         </group>
     </open-files>
 </project-private>
