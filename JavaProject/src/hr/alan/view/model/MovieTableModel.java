@@ -14,8 +14,10 @@ import javax.swing.table.AbstractTableModel;
  * @author Alan
  */
 public class MovieTableModel extends AbstractTableModel{
-    private static final String[] COLUMN_NAMES = {"Id", "Title", "Publish Date", "Description", "Duration"
-                                                   , "Movie Genre", "Picture Path", "Movie Begin Date"};
+    private static final String[] COLUMN_NAMES = {
+        "Id", "Title", 
+        "Publish Date", "Description", "Duration"
+        , "Movie Genre", "Picture Path", "Movie Begin Date"};
     
     private List<Movie> movies;
 
@@ -35,7 +37,7 @@ public class MovieTableModel extends AbstractTableModel{
 
     @Override
     public int getColumnCount() {
-        return Movie.class.getDeclaredFields().length;
+        return Movie.class.getDeclaredFields().length - 1;
     }
 
     @Override
@@ -52,7 +54,7 @@ public class MovieTableModel extends AbstractTableModel{
             case 4:
                 return movies.get(rowIndex).getDuration();
             case 5:
-                return movies.get(rowIndex).getId();
+                return movies.get(rowIndex).getGenre().getGenreName();
             case 6:
                 return movies.get(rowIndex).getMoviePicturePath();
             case 7:

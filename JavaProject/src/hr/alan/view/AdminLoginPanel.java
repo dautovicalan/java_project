@@ -139,15 +139,15 @@ public class AdminLoginPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        if (!formValid()) {
+        if (!formValid()) { 
             return;
         }
         
-        if (!authCurrentUser(new AppUser(tfUsername.getText().trim(), 
-                Arrays.toString(tfPassword.getPassword())))) {
-            MessageUtils.showErrorMessage("Error", "Wrong username or password");
-            return;
-        }
+        //if (!authCurrentUser(new AppUser(tfUsername.getText().trim(), 
+          //      Arrays.toString(tfPassword.getPassword())))) {
+            //MessageUtils.showErrorMessage("Error", "Wrong username or password");
+            //return;
+        //}
         AdminForm.main();
         reference.setVisible(false);
     }//GEN-LAST:event_btnLoginActionPerformed

@@ -7,9 +7,11 @@ package hr.alan.dal;
 import hr.alan.businessModel.Actor;
 import hr.alan.businessModel.AppUser;
 import hr.alan.businessModel.Director;
+import hr.alan.businessModel.Genre;
 import hr.alan.businessModel.Movie;
 import hr.alan.businessModel.MovieCast;
 import hr.alan.businessModel.Person;
+import hr.alan.businessModel.UploadData;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -26,7 +28,8 @@ public interface Repository {
     Optional<Movie> selectMovie(int id);
     void updateMovie(int id, Movie selectedMovie);
     int createMovie(Movie movie);
-    void createMovies(List<Movie> movies) throws Exception;
+    int createGenre(Genre movie);
+    void createMovies(List<UploadData> movies) throws Exception;
     void deleteMovie(int id);
     Optional<Director> selectDirector(int id);
     int createDirector(Director director);
@@ -48,4 +51,6 @@ public interface Repository {
     void deleteAllDBData();
 
     void deleteActorFromMovie(int id, int id0);
+
+    List<Genre> selectGenres();
 }

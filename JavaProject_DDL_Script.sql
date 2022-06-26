@@ -22,17 +22,24 @@ CREATE TABLE Movie
 	MovieBegin NVARCHAR(90) NULL
 )
 
-CREATE PROC selectMovies
+ALTER PROC selectMovies
 AS
 BEGIN
-	SELECT * FROM Movie
+	SELECT Movie.Id, Movie.Title, Movie.PubDate, Movie.MovieDescription, Movie.Duration, Movie.MoviePicturePath,
+	Movie.MovieBegin, MovieGenre.Id AS GenreId, MovieGenre.GenreName AS GenreName
+	FROM Movie
+	INNER JOIN MovieGenre ON MovieGenre.Id = Movie.MovieGenreId
 END
 
-CREATE PROC selectMovie
+ALTER PROC selectMovie
 	@movieId INT
 AS
 BEGIN
-	SELECT * FROM Movie WHERE Id = @movieId
+	SELECT Movie.Id, Movie.Title, Movie.PubDate, Movie.MovieDescription, Movie.Duration, Movie.MoviePicturePath,
+	Movie.MovieBegin, MovieGenre.Id AS GenreId, MovieGenre.GenreName AS GenreName
+	FROM Movie
+	INNER JOIN MovieGenre ON MovieGenre.Id = Movie.MovieGenreId
+	WHERE Movie.Id = @movieId
 END
 
 ALTER PROC createMovie
@@ -42,27 +49,53 @@ ALTER PROC createMovie
 	@duration INT,
 	@movieBegin NVARCHAR(90),
 	@moviePicturePath NVARCHAR(MAX),
+	@genreId INT,
 	@movieId INT OUTPUT
 AS
 BEGIN
-	INSERT INTO Movie(Title, PubDate, MovieDescription, Duration, MovieBegin, MoviePicturePath)
-	VALUES (@title, @pubDate, @description, @duration, @movieBegin, @moviePicturePath)
+	INSERT INTO Movie(Title, PubDate, MovieDescription, Duration, MovieBegin, MoviePicturePath, MovieGenreId)
+	VALUES (@title, @pubDate, @description, @duration, @movieBegin, @moviePicturePath, @genreId)
 
 	SET @movieId = SCOPE_IDENTITY()
 END
 
-CREATE PROC updateMovie
+ALTER PROC createGenre
+	@title NVARCHAR(250),
+	@genreId INT OUTPUT
+AS
+BEGIN
+	IF EXISTS(SELECT * FROM MovieGenre WHERE GenreName = @title)
+		BEGIN
+			SELECT @genreId = Id FROM MovieGenre WHERE GenreName = @title
+		END
+	ELSE
+		BEGIN
+			INSERT INTO MovieGenre
+			VALUES (@title)
+
+			SET @genreId = SCOPE_IDENTITY()
+		END
+END
+
+CREATE PROC selectGenres
+AS
+BEGIN
+	SELECT * FROM MovieGenre
+END
+
+ALTER PROC updateMovie
 	@title NVARCHAR(250),
 	@pubDate NVARCHAR(90),
 	@description NVARCHAR(MAX),
 	@duration INT,
 	@movieBegin NVARCHAR(90),
 	@moviePicturePath NVARCHAR(MAX),
+	@genreId INT,
 	@movieId INT
 AS
 BEGIN
 	UPDATE Movie
-	SET Title = @title, PubDate = @pubDate, MovieDescription = @description, Duration = @duration, MovieBegin = @movieBegin, MoviePicturePath = @moviePicturePath
+	SET Title = @title, MovieGenreId = @genreId, PubDate = @pubDate, MovieDescription = @description, Duration = @duration, MovieBegin = @movieBegin, MoviePicturePath = @moviePicturePath
 	WHERE Id = @movieId
 END
 
@@ -88,10 +121,10 @@ CREATE TABLE Actor
 	LastName NVARCHAR(25) NOT NULL
 )
 
-CREATE PROC selectActors
+ALTER PROC selectActors
 AS
 BEGIN
-	SELECT * FROM Actor
+	SELECT DISTINCT * FROM Actor GROUP BY Id, FirstName, LastName
 END
 
 CREATE PROC selectActor
@@ -101,16 +134,23 @@ BEGIN
 	SELECT * FROM Actor WHERE Id = @actorId
 END
 
-CREATE PROC createActor
+ALTER PROC createActor
 	@firstName NVARCHAR(25),
 	@lastName NVARCHAR(25),
 	@actorId INT OUTPUT
 AS
 BEGIN
-	INSERT INTO Actor
-	VALUES (@firstName, @lastName)
+	IF EXISTS(SELECT * FROM Actor WHERE FirstName LIKE @firstName AND LastName LIKE @lastName)
+		BEGIN
+			SELECT @actorId = Id FROM Actor WHERE FirstName LIKE @firstName AND LastName LIKE @lastName
+		END
+	ELSE
+		BEGIN
+			INSERT INTO Actor
+			VALUES (@firstName, @lastName)
 
-	SET @actorId = SCOPE_IDENTITY()
+			SET @actorId = SCOPE_IDENTITY()
+		END
 END
 
 CREATE PROC updateActor
@@ -315,3 +355,7 @@ BEGIN
 END
 
 EXEC createInitAppAdmin
+
+SELECT Movie.Title, MovieGenre.GenreName
+FROM Movie
+INNER JOIN MovieGenre ON MovieGenre.Id = Movie.MovieGenreId

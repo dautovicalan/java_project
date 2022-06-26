@@ -6,6 +6,7 @@
 package hr.alan.client;
 
 import hr.alan.businessModel.Movie;
+import hr.alan.businessModel.UploadData;
 import hr.alan.dal.Repository;
 import hr.alan.dal.RepositoryFactory;
 import hr.alan.parser.RSSFeedParser;
@@ -202,7 +203,7 @@ public class AdminForm extends javax.swing.JFrame {
     }
 
     private void uploadAllFiles() throws IOException, Exception {
-        List<Movie> movies = new ArrayList<>();
+        List<UploadData> movies = new ArrayList<>();
         for (Item parsedItem : parsedItems) {
             movies.add(DatabasePreparerUtils.prepareMovie(parsedItem));
         }

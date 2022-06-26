@@ -23,6 +23,15 @@ public class Movie {
     private int duration;
     private String moviePicturePath;
     private LocalDateTime movieBegin;
+    private Genre genre;
+
+    public Genre getGenre() {
+        return genre;
+    }
+
+    public void setGenre(Genre genre) {
+        this.genre = genre;
+    }
 
     public Movie(String title, LocalDateTime pubDate, String movieDescription, int duration, String moviePicturePath, LocalDateTime movieBegin) {
         this.title = title;
@@ -33,7 +42,7 @@ public class Movie {
         this.movieBegin = movieBegin;
     }
 
-    public Movie(int id, String title, LocalDateTime pubDate, String movieDescription, int duration, String moviePicturePath, LocalDateTime movieBegin) {
+    public Movie(int id, String title, LocalDateTime pubDate, String movieDescription, int duration, String moviePicturePath, LocalDateTime movieBegin, Genre genre) {
         this.id = id;
         this.title = title;
         this.pubDate = pubDate;
@@ -41,6 +50,7 @@ public class Movie {
         this.duration = duration;
         this.moviePicturePath = moviePicturePath;
         this.movieBegin = movieBegin;
+        this.genre = genre;
     }
     
 

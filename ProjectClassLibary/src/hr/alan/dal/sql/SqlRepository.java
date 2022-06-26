@@ -7,9 +7,11 @@ package hr.alan.dal.sql;
 import hr.alan.businessModel.Actor;
 import hr.alan.businessModel.AppUser;
 import hr.alan.businessModel.Director;
+import hr.alan.businessModel.Genre;
 import hr.alan.businessModel.Movie;
 import hr.alan.businessModel.MovieCast;
 import hr.alan.businessModel.Person;
+import hr.alan.businessModel.UploadData;
 import hr.alan.dal.Repository;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +36,13 @@ import javax.swing.JList;
  */
 public class SqlRepository implements Repository{
     
-    private static final String CREATE_MOVIE = "{ CALL createMovie (?,?,?,?,?,?,?) }";
-    private static final String UPDATE_MOVIE = "{ CALL updateMovie (?,?,?,?,?,?,?) }";
+    private static final String CREATE_MOVIE = "{ CALL createMovie (?,?,?,?,?,?,?,?,?) }";
+    private static final String UPDATE_MOVIE = "{ CALL updateMovie (?,?,?,?,?,?,?,?) }";
     private static final String DELETE_MOVIE = "{ CALL deleteMovie (?) }";
     private static final String SELECT_MOVIES = "{ CALL selectMovies }";
     private static final String SELECT_MOVIE = "{ CALL selectMovie (?) }";
     private static final String SELECT_ACTORS = "{ CALL selectActors }";
+    private static final String SELECT_GENRES = "{ CALL selectGenres }";
     private static final String SELECT_ACTOR = "{ CALL selectActor (?) }";
     private static final String CREATE_ACTOR = "{ CALL createActor (?,?,?) }";
     private static final String UPDATE_ACTOR = "{ CALL updateActor (?,?,?) }";
@@ -52,7 +55,8 @@ public class SqlRepository implements Repository{
     private static final String CREATE_CAST_ACTOR = "{ CALL createCastActor (?,?) }";
     private static final String CREATE_CAST_DIRECTOR = "{ CALL createCastDirector (?,?) }";
     private static final String SELECT_MOVIE_CAST_ACTOR = "{ CALL selectMovieCastActor (?) }";
-    
+    private static final String CREATE_GENRE = "{ CALL createGenre (?,?) }";
+
     
     private static final String REGISTER_USER = "{ CALL registerUser (?,?,?) }";
     private static final String AUTH_USER = "{ CALL authUser (?,?) }";
@@ -79,7 +83,10 @@ public class SqlRepository implements Repository{
                         rs.getString("MovieDescription"), 
                         rs.getInt("Duration"), 
                         rs.getString("MoviePicturePath"), 
-                        LocalDateTime.parse(rs.getString("MovieBegin"), Movie.DATE_FORMATTER))
+                        LocalDateTime.parse(rs.getString("MovieBegin"), Movie.DATE_FORMATTER),
+                        new Genre(rs.getInt("GenreId"),
+                        rs.getString("GenreName"))
+                )
                 );
             }
         } catch (SQLException ex) {
@@ -144,7 +151,9 @@ public class SqlRepository implements Repository{
                                 rs.getString("MovieDescription"), 
                                 rs.getInt("Duration"), 
                                 rs.getString("MoviePicturePath"), 
-                                LocalDateTime.parse(rs.getString("MovieBegin"), Movie.DATE_FORMATTER)
+                                LocalDateTime.parse(rs.getString("MovieBegin"), Movie.DATE_FORMATTER),
+                                new Genre(rs.getInt("GenreId"),
+                        rs.getString("GenreName"))
                                 )
                     );
                 }
@@ -167,6 +176,7 @@ public class SqlRepository implements Repository{
             stmt.setString("@" + "pubDate", data.getPubDate().format(Movie.DATE_FORMATTER));
             stmt.setString("@" + "description", data.getMovieDescription());
             stmt.setInt("@" + "duration", data.getDuration());
+            stmt.setInt("@" + "genreId", data.getGenre().getId());
             stmt.setString("@" + "movieBegin", data.getMovieBegin().format(Movie.DATE_FORMATTER));
             stmt.setString("@" + "moviePicturePath", data.getMoviePicturePath());
             stmt.setInt("@" + "movieId", id);
@@ -186,6 +196,7 @@ public class SqlRepository implements Repository{
             stmt.setString("@" + "pubDate", movie.getPubDate().format(Movie.DATE_FORMATTER));
             stmt.setString("@" + "description", movie.getMovieDescription());
             stmt.setInt("@" + "duration", movie.getDuration());
+            stmt.setInt("@" + "genreId", movie.getGenre().getId());
             stmt.setString("@" + "movieBegin", movie.getMovieBegin().format(Movie.DATE_FORMATTER));
             stmt.setString("@" + "moviePicturePath", movie.getMoviePicturePath());
             stmt.registerOutParameter("@" + "movieId", Types.INTEGER);
@@ -199,21 +210,28 @@ public class SqlRepository implements Repository{
     }
     
     @Override
-    public void createMovies(List<Movie> movies) throws Exception {
+    public void createMovies(List<UploadData> movies) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(CREATE_MOVIE)) {
 
-            for (Movie movie : movies) {
-                stmt.setString("@" + "title", movie.getTitle());
-                stmt.setString("@" + "pubDate", movie.getPubDate().format(Movie.DATE_FORMATTER));
-                stmt.setString("@" + "description", movie.getMovieDescription());
-                stmt.setInt("@" + "duration", movie.getDuration());
-                stmt.setString("@" + "movieBegin", movie.getMovieBegin().format(Movie.DATE_FORMATTER));
-                stmt.setString("@" + "moviePicturePath", movie.getMoviePicturePath());
+            for (UploadData movie : movies) {
+                int createdGenre = createGenre(movie.getGenre());
+                stmt.setString("@" + "title", movie.getMovie().getTitle());
+                stmt.setString("@" + "pubDate", movie.getMovie().getPubDate().format(Movie.DATE_FORMATTER));
+                stmt.setString("@" + "description", movie.getMovie().getMovieDescription());
+                stmt.setInt("@" + "duration", movie.getMovie().getDuration());
+                stmt.setString("@" + "movieBegin", movie.getMovie().getMovieBegin().format(Movie.DATE_FORMATTER));
+                stmt.setString("@" + "moviePicturePath", movie.getMovie().getMoviePicturePath());
+                stmt.setInt("@" + "genreId", createdGenre);          
                 stmt.registerOutParameter("@" + "movieId", Types.INTEGER);
-
                 stmt.executeUpdate();
+                int createdMovie = stmt.getInt("@" + "movieId");
+                for (Person actor : movie.getActors()) {
+                    int createdActor = createActor((Actor) actor);
+                    createCastActor(createdMovie, (Actor) actor);
+                }
+                
             }
         }
     }
@@ -515,5 +533,40 @@ public class SqlRepository implements Repository{
         } catch (SQLException ex) {
             Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @Override
+    public int createGenre(Genre movie) {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(CREATE_GENRE)) {
+            stmt.setString("@" + "title", movie.getGenreName());
+            stmt.registerOutParameter("@" + "genreId", Types.INTEGER);
+
+            stmt.executeUpdate();
+            return stmt.getInt("@" + "genreId");
+        } catch (SQLException ex) {
+            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    @Override
+    public List<Genre> selectGenres() {
+        List<Genre> genres = new ArrayList<>();
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(SELECT_GENRES);
+                ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                genres.add(new Genre(rs.getInt("Id"), 
+                        rs.getString("GenreName")));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return genres;
     }
 }
