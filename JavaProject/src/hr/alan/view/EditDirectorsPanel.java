@@ -7,7 +7,7 @@ package hr.alan.view;
 import hr.alan.businessModel.Director;
 import hr.alan.dal.Repository;
 import hr.alan.dal.RepositoryFactory;
-import hr.alan.view.model.DirectorTableModel;
+import hr.alan.view.model.PersonTableModel;
 import hr.algebra.utils.MessageUtils;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +30,7 @@ public class EditDirectorsPanel extends javax.swing.JPanel {
      * Creates new form EditDirectorsPanel
      */
     private Repository repo;
-    private DirectorTableModel directorsTableModel;
+    private PersonTableModel directorsTableModel;
     private Map<JTextComponent, JLabel> validationFields;
     private Director selectedDirector;
     
@@ -296,7 +296,7 @@ public class EditDirectorsPanel extends javax.swing.JPanel {
         tbDirectors.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tbDirectors.setAutoCreateRowSorter(true);
         tbDirectors.setRowHeight(25);
-        directorsTableModel = new DirectorTableModel(repo.selectDirectors());
+        directorsTableModel = new PersonTableModel(repo.selectDirectors());
         tbDirectors.setModel(directorsTableModel);
     }
     

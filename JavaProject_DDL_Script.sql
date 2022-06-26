@@ -276,16 +276,23 @@ BEGIN
 	VALUES(@directorId, @movieId)
 END
 
-CREATE PROC selectMovieCast
+ALTER PROC selectMovieCastActor
 	@movieId INT
 AS
 BEGIN
-	SELECT Actor.FirstName AS ActorFirstName, Actor.LastName AS ActorLastName, Director.FirstName AS DirectorFirstName,
-	Director.LastName AS DirectorLastName
+	SELECT Actor.Id, Actor.FirstName, Actor.LastName
 	FROM MovieCast
 	INNER JOIN Actor ON Actor.Id = MovieCast.ActorId
-	INNER JOIN Director ON Director.Id = MovieCast.DirectorId
 	WHERE MovieId = @movieId
+END
+
+CREATE PROC deleteActorFromMovie
+	@movieId INT,
+	@actorId INT
+AS
+BEGIN
+	DELETE FROM MovieCast
+	WHERE MovieId = @movieId AND ActorId = @actorId
 END
 
 CREATE PROC deleteAllDBData

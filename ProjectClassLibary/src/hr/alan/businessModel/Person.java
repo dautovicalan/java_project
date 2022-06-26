@@ -9,7 +9,7 @@ package hr.alan.businessModel;
  *
  * @author Alan
  */
-public class Person {
+public class Person implements Comparable<Person>{
     private int id;
     private String firstName;
     private String lastName;
@@ -52,5 +52,10 @@ public class Person {
     @Override
     public String toString() {
         return firstName + " " + lastName;
+    }
+
+    @Override
+    public int compareTo(Person o) {
+        return Integer.compare(this.getId(), o.getId());
     }
 }

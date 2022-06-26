@@ -198,6 +198,7 @@ public class AdminForm extends javax.swing.JFrame {
     private void handleDeleteEverything() {
         repo.deleteAllDBData();
         FileUtils.deleteAllPictures();
+        MessageUtils.showInformationMessage("Sucess", "Successfuly deleted everything");
     }
 
     private void uploadAllFiles() throws IOException, Exception {
@@ -206,5 +207,6 @@ public class AdminForm extends javax.swing.JFrame {
             movies.add(DatabasePreparerUtils.prepareMovie(parsedItem));
         }
         repo.createMovies(movies);
+        MessageUtils.showInformationMessage("Success", "Successfuly uploaded new data");
     }
 }

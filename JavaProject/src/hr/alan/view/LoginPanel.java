@@ -12,6 +12,7 @@ import hr.alan.dal.Repository;
 import hr.alan.dal.RepositoryFactory;
 import hr.algebra.utils.MessageUtils;
 import hr.algebra.utils.PasswordUtils;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -50,10 +51,10 @@ public class LoginPanel extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         tfUsername = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        tfPassword = new javax.swing.JTextField();
         btnLogin = new javax.swing.JButton();
         lbPasswordError = new javax.swing.JLabel();
         lbUsernameError = new javax.swing.JLabel();
+        tfPassword = new javax.swing.JPasswordField();
 
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -95,13 +96,13 @@ public class LoginPanel extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(tfPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addComponent(tfPassword))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(tfUsername)
-                                .addGap(12, 12, 12)))))
+                                .addComponent(tfUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)))
+                        .addGap(12, 12, 12)))
                 .addGap(18, 18, 18)
                 .addComponent(lbPasswordError, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(167, 167, 167))
@@ -120,14 +121,14 @@ public class LoginPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tfUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(33, 33, 33)
+                .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tfPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbPasswordError, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(60, 60, 60)
+                    .addComponent(lbPasswordError, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tfPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(69, 69, 69)
                 .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(138, Short.MAX_VALUE))
+                .addContainerGap(131, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(156, 156, 156)
@@ -142,7 +143,7 @@ public class LoginPanel extends javax.swing.JPanel {
         }
         
         if (!authCurrentUser(new AppUser(tfUsername.getText().trim(), 
-                PasswordUtils.hashPassword(tfPassword.getText())))) {
+                PasswordUtils.hashPassword(Arrays.toString(tfPassword.getPassword()))))) {
             MessageUtils.showErrorMessage("Error", "Wrong username or password");
             return;
         }
@@ -163,7 +164,7 @@ public class LoginPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel lbPasswordError;
     private javax.swing.JLabel lbUsernameError;
-    private javax.swing.JTextField tfPassword;
+    private javax.swing.JPasswordField tfPassword;
     private javax.swing.JTextField tfUsername;
     // End of variables declaration//GEN-END:variables
 

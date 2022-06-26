@@ -12,6 +12,8 @@ import hr.alan.businessModel.MovieCast;
 import hr.alan.businessModel.Person;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import javax.swing.JList;
 
 /**
  *
@@ -19,8 +21,8 @@ import java.util.Optional;
  */
 public interface Repository {
     List<Movie> selectMovies();
-    List<Actor> selectActors();
-    List<Director> selectDirectors() throws Exception;
+    List<Person> selectActors();
+    List<Person> selectDirectors() throws Exception;
     Optional<Movie> selectMovie(int id);
     void updateMovie(int id, Movie selectedMovie);
     int createMovie(Movie movie);
@@ -39,9 +41,11 @@ public interface Repository {
     Optional<AppUser> authUser(AppUser user);
     void createCastActor(int movieId, Actor actor);
     void createCastDirector(int movieId, Director director);
-    List<MovieCast> selectMovieCast(int movieId);
+    Set<Person> selectMovieCastActor(int movieId);
 
     Optional<AppUser> authAdmin(AppUser user);
 
     void deleteAllDBData();
+
+    void deleteActorFromMovie(int id, int id0);
 }

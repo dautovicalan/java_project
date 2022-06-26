@@ -14,6 +14,7 @@ import hr.alan.view.EditMoviesPanel;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 
 /**
  *
@@ -41,6 +42,7 @@ public class MainForm extends javax.swing.JFrame {
         tpMainPane = new javax.swing.JTabbedPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("MOVIE APP");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -93,7 +95,9 @@ public class MainForm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainForm().setVisible(true);
+                MainForm form = new MainForm();
+                form.setVisible(true);
+                form.setExtendedState(JFrame.MAXIMIZED_BOTH);
             }
         });
     }

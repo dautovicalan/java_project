@@ -21,13 +21,14 @@ public class DatabasePreparerUtils {
    private DatabasePreparerUtils(){
    }
    
+   private static final String DIR = "assets";
+   private static final String EXT = ".jpg";
+   
    public static Movie prepareMovie(Item item) throws IOException{
        
-       String destination = "assets" + File.separator  + UUID.randomUUID() + "jpg";
+       String destination = DIR + File.separator  + UUID.randomUUID() + EXT;
        FileUtils.copyFromUrl(item.getPlakat(), destination);
-       
-       //Integer parsedNumber = Integer.parseInt(!"".equals(item.getTrajanje()) ? item.getTrajanje() : 0);
-       
+              
        return new Movie(
                item.getTitle(), 
                LocalDateTime.parse("2011-12-03T10:15:30", Movie.DATE_FORMATTER), 

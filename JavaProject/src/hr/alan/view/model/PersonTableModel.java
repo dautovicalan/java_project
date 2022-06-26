@@ -6,6 +6,7 @@ package hr.alan.view.model;
 
 import hr.alan.businessModel.Actor;
 import hr.alan.businessModel.Movie;
+import hr.alan.businessModel.Person;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
@@ -13,39 +14,39 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author Alan
  */
-public class ActorTableModel extends AbstractTableModel{
+public class PersonTableModel extends AbstractTableModel{
     private static final String[] COLUMN_NAMES = {"Id", "First Name", "Last Name"};
     
-    private List<Actor> actors;
+    private List<Person> persons;
 
-    public ActorTableModel(List<Actor> actors) {
-        this.actors = actors;
+    public PersonTableModel(List<Person> persons) {
+        this.persons = persons;
     }
 
-    public void setArticles(List<Actor> actors) {
-        this.actors = actors;
+    public void setArticles(List<Person> persons) {
+        this.persons = persons;
         fireTableDataChanged();
     }
 
     @Override
     public int getRowCount() {
-        return actors.size();
+        return persons.size();
     }
 
     @Override
     public int getColumnCount() {
-        return Actor.class.getDeclaredFields().length;
+        return Person.class.getDeclaredFields().length;
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         switch (columnIndex) {
             case 0:
-                return actors.get(rowIndex).getId();
+                return persons.get(rowIndex).getId();
             case 1:
-                return actors.get(rowIndex).getFirstName();
+                return persons.get(rowIndex).getFirstName();
             case 2:
-                return actors.get(rowIndex).getLastName();
+                return persons.get(rowIndex).getLastName();
             default:
                 throw new RuntimeException("No such column");
         }
