@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -326,7 +327,7 @@ public class EditMoviesPanel extends javax.swing.JPanel {
                     taDesc.getText(),
                     tfDuration.getComponentCount(),
                     localPath,
-                    LocalDateTime.parse(tfMovieStart.getText(), Movie.DATE_FORMATTER)
+                    LocalDate.parse(tfMovieStart.getText(), Movie.POCETAK_FILMA_FORMATTER)
             );
 
             repo.createMovie(movie);
@@ -360,10 +361,10 @@ public class EditMoviesPanel extends javax.swing.JPanel {
             }   
 
             selectedMovie.setTitle(tfTitle.getText().trim());
-            selectedMovie.setPubDate(LocalDateTime.parse(tfPubDate.getText().trim(), Movie.DATE_FORMATTER));
+            selectedMovie.setPubDate(LocalDateTime.parse(tfPubDate.getText(), Movie.DATE_FORMATTER));
             selectedMovie.setMovieDescription(taDesc.getText());
             selectedMovie.setDuration((int) tfDuration.getValue());
-            selectedMovie.setMovieBegin(LocalDateTime.parse(tfPubDate.getText().trim(), Movie.DATE_FORMATTER));
+            selectedMovie.setMovieBegin(LocalDate.parse(tfMovieStart.getText(), Movie.POCETAK_FILMA_FORMATTER));
             selectedMovie.setGenre((Genre) cbMovieGenre.getSelectedItem());
             
             repo.updateMovie(selectedMovie.getId(), selectedMovie);
@@ -478,9 +479,9 @@ public class EditMoviesPanel extends javax.swing.JPanel {
     }
     
     private void clearForm(){
-        for (JTextComponent field : validationFields.keySet()) {
+        validationFields.keySet().forEach((field) -> {
             field.setText("");
-        }
+        });
         lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/no_image.png")));
         selectedMovie = null;
     }
@@ -506,8 +507,8 @@ public class EditMoviesPanel extends javax.swing.JPanel {
         tfTitle.setText(movie.getTitle());
         tfPubDate.setText(movie.getPubDate().format(Movie.DATE_FORMATTER));
         taDesc.setText(movie.getMovieDescription());
-        tfDuration.setValue(Integer.valueOf(movie.getDuration()));
-        tfMovieStart.setText(movie.getMovieBegin().format(Movie.DATE_FORMATTER));
+        tfDuration.setValue(movie.getDuration());
+        tfMovieStart.setText(movie.getMovieBegin().format(Movie.POCETAK_FILMA_FORMATTER));
         
         if (movie.getMoviePicturePath()!= null && Files.exists(Paths.get(movie.getMoviePicturePath()))) {
             tfPicturePath.setText(movie.getMoviePicturePath());
@@ -553,7 +554,7 @@ public class EditMoviesPanel extends javax.swing.JPanel {
 
     }
 
-    private void initCombosMombos() {
+    private void initCombosMombos() throws Exception {
         cbMovieGenre.setModel(new DefaultComboBoxModel<>(repo.selectGenres().toArray()));
     }
 }

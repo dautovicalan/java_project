@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -114,16 +115,21 @@ public class AdminForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDeleteAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteAllActionPerformed
-        handleDeleteEverything();
+        try {
+            handleDeleteEverything();
+        } catch (Exception ex) {
+            Logger.getLogger(AdminForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnDeleteAllActionPerformed
 
     private void btnUploadDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploadDataActionPerformed
-        try {
-            uploadAllFiles();
-        } catch (Exception ex) {
-            Logger.getLogger(AdminForm.class.getName()).log(Level.SEVERE, null, ex);
-            MessageUtils.showErrorMessage("Error", "Something went wrong");
-        }
+        SwingUtilities.invokeLater(() -> {
+            try {
+                uploadAllFiles();
+            } catch (Exception ex) {
+                Logger.getLogger(AdminForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
     }//GEN-LAST:event_btnUploadDataActionPerformed
 
     /**
@@ -196,7 +202,7 @@ public class AdminForm extends javax.swing.JFrame {
         repo = RepositoryFactory.getRepository();
     }
 
-    private void handleDeleteEverything() {
+    private void handleDeleteEverything() throws Exception {
         repo.deleteAllDBData();
         FileUtils.deleteAllPictures();
         MessageUtils.showInformationMessage("Sucess", "Successfuly deleted everything");

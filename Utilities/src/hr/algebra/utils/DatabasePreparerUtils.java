@@ -14,6 +14,7 @@ import hr.alan.businessModel.UploadData;
 import hr.alan.xmlModels.Item;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -38,18 +39,20 @@ public class DatabasePreparerUtils {
        FileUtils.copyFromUrl(item.getPlakat(), destination);
        
        Genre movieGenre = new Genre(item.getZanr());
+       int duration = item.getTrajanje().length() > 0 ? Integer.parseInt(item.getTrajanje())
+               : 0;
+       LocalDate parse = LocalDate.parse(item.getPocetak(), Movie.POCETAK_FILMA_FORMATTER);
        Movie movie = new Movie(
                item.getTitle(), 
-               LocalDateTime.parse("2011-12-03T10:15:30", Movie.DATE_FORMATTER), 
+               LocalDateTime.parse(item.getPubDate(), Movie.DATE_FORMATTER), 
                item.getDescription(), 
-               0, 
+               duration, 
                destination, 
-               LocalDateTime.parse("2011-12-03T10:15:30", Movie.DATE_FORMATTER));
+               LocalDate.parse(item.getPocetak(), Movie.POCETAK_FILMA_FORMATTER));
        
        Person director = new Director(item.getRedatelj(), item.getRedatelj());
        List<Person> listOfActors = parseActors(item.getGlumci());
-       
-              
+            
        return new UploadData(movie, listOfActors, director, movieGenre);
    }
    
@@ -61,9 +64,9 @@ public class DatabasePreparerUtils {
         String[] arrayOfActors = glumci.trim().split(",", -1);
         
         
-       for (int i = 0; i < arrayOfActors.length; i++) {
-         String[] temp = arrayOfActors[i].trim().split(" ", -1);
-         actors.add(new Actor(temp[0], temp[1]));
+       for (String arrayOfActor : arrayOfActors) {
+           String[] temp = arrayOfActor.trim().split(" ", -1);
+           actors.add(new Actor(temp[0], temp[1]));
        }
         
         return actors;

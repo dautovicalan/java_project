@@ -14,6 +14,8 @@ import hr.algebra.utils.PasswordUtils;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.text.JTextComponent;
 
@@ -167,10 +169,15 @@ public class RegisterPanel extends javax.swing.JPanel {
         
         AppUser newUser = new AppUser(userName, hashedPassword);
         
-        if (repo.registerUser(newUser) == -1) {
-            MessageUtils.showErrorMessage("Error", "Username already exists");
-        } else {
-            MessageUtils.showInformationMessage("Sucess", "You created account succefully. You can now login");
+        try {
+            if (repo.registerUser(newUser) == -1) {
+                MessageUtils.showErrorMessage("Error", "Username already exists");
+            } else {
+                MessageUtils.showInformationMessage("Sucess", "You created account succefully. You can now login");
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(RegisterPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage("Error", "Wrong username or password");
         }
         clearForm();
         

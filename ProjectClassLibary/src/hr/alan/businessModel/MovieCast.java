@@ -5,27 +5,48 @@
  */
 package hr.alan.businessModel;
 
+import java.util.List;
+import java.util.Set;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+
 /**
  *
  * @author Alan
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class MovieCast {
     
-    private Actor actor;
+    @XmlElement(name = "movie")
+    private Movie movie;
+    @XmlElement(name = "actor")
+    private Set<Person> actors;
     private Director director;
 
-    public MovieCast(Actor actor, Director director) {
-        this.actor = actor;
-        this.director = director;
+    public MovieCast(Set<Person> actors, Movie movie) {
+        this.actors = actors;
+        this.movie = movie;
     }
 
-    public Actor getActor() {
-        return actor;
+    public Set<Person> getActor() {
+        return actors;
     }
 
     public Director getDirector() {
         return director;
     }
-    
+
+    public Movie getMovie() {
+        return movie;
+    }
+
+    public void setMovie(Movie movie) {
+        this.movie = movie;
+    }
+
+    public MovieCast() {
+    }
     
 }

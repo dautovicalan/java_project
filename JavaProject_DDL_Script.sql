@@ -281,23 +281,6 @@ BEGIN
 	SELECT * FROM AppAdmin WHERE UserName = @username AND UserPassword = @userPassword
 END
 
-CREATE TABLE MovieCast
-(
-	ActorId INT FOREIGN KEY REFERENCES Actor(Id),
-	DirectorId INT FOREIGN KEY REFERENCES Director(Id),
-	MovieId INT FOREIGN KEY REFERENCES Movie(Id)
-)
-
-CREATE PROC createCast
-	@actorId INT,
-	@directorId INT,
-	@movieId INT
-AS
-BEGIN
-	INSERT INTO MovieCast
-	VALUES(@actorId, @directorId, @movieId)
-END
-
 CREATE PROC createCastActor
 	@actorId INT,
 	@movieId INT
@@ -307,12 +290,19 @@ BEGIN
 	VALUES(@actorId, @movieId)
 END
 
+CREATE TABLE MovieDirectors
+(
+	Id INT PRIMARY KEY IDENTITY(1,1),
+	directorId INT FOREIGN KEY REFERENCES Director(Id),
+	movieId INT FOREIGN KEY REFERENCES Director(Id)
+)
+
 CREATE PROC createCastDirector
 	@directorId INT,
 	@movieId INT
 AS
 BEGIN
-	INSERT INTO MovieCast (DirectorId, MovieId)
+	INSERT INTO MovieDirectors (DirectorId, MovieId)
 	VALUES(@directorId, @movieId)
 END
 
@@ -345,6 +335,8 @@ BEGIN
 
 	-- enable referential integrity again 
 	EXEC sp_MSForEachTable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT ALL' 
+
+	EXEC createInitAppAdmin
 END
 
 CREATE PROC createInitAppAdmin

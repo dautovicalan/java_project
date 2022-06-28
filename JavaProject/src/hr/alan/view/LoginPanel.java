@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
@@ -142,10 +144,14 @@ public class LoginPanel extends javax.swing.JPanel {
             return;
         }
         
-        if (!authCurrentUser(new AppUser(tfUsername.getText().trim(), 
-                PasswordUtils.hashPassword(Arrays.toString(tfPassword.getPassword()))))) {
-            MessageUtils.showErrorMessage("Error", "Wrong username or password");
-            return;
+        try {
+            if (!authCurrentUser(new AppUser(tfUsername.getText().trim(),
+                    PasswordUtils.hashPassword(Arrays.toString(tfPassword.getPassword()))))) {
+                MessageUtils.showErrorMessage("Error", "Wrong username or password");
+                return;
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(LoginPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
         MainForm.main();
         reference.setVisible(false);
@@ -168,7 +174,7 @@ public class LoginPanel extends javax.swing.JPanel {
     private javax.swing.JTextField tfUsername;
     // End of variables declaration//GEN-END:variables
 
-    private boolean authCurrentUser(AppUser user) {
+    private boolean authCurrentUser(AppUser user) throws Exception {
         Optional<AppUser> authUser = repo.authUser(user);
         return authUser.isPresent();
     }

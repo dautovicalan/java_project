@@ -22,6 +22,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.TreeSet;
@@ -33,10 +34,11 @@ import javax.swing.JList;
 /**
  *
  * @author Alan
+ * @param <T>
  */
 public class SqlRepository implements Repository{
     
-    private static final String CREATE_MOVIE = "{ CALL createMovie (?,?,?,?,?,?,?,?,?) }";
+    private static final String CREATE_MOVIE = "{ CALL createMovie (?,?,?,?,?,?,?,?) }";
     private static final String UPDATE_MOVIE = "{ CALL updateMovie (?,?,?,?,?,?,?,?) }";
     private static final String DELETE_MOVIE = "{ CALL deleteMovie (?) }";
     private static final String SELECT_MOVIES = "{ CALL selectMovies }";
@@ -67,7 +69,7 @@ public class SqlRepository implements Repository{
     private static final String DELETE_ACTOR_FROM_MOVIE = "{ CALL deleteActorFromMovie (?,?) }";
 
     @Override
-    public List<Movie> selectMovies() {
+    public List<Movie> selectMovies() throws SQLException {
         List<Movie> movies = new ArrayList<>();
         DataSource dataSource = DataSourceSingleton.getInstance();
         
@@ -83,20 +85,18 @@ public class SqlRepository implements Repository{
                         rs.getString("MovieDescription"), 
                         rs.getInt("Duration"), 
                         rs.getString("MoviePicturePath"), 
-                        LocalDateTime.parse(rs.getString("MovieBegin"), Movie.DATE_FORMATTER),
+                        LocalDate.parse(rs.getString("MovieBegin"), Movie.POCETAK_FILMA_FORMATTER),
                         new Genre(rs.getInt("GenreId"),
                         rs.getString("GenreName"))
                 )
                 );
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
         return movies;
     }   
 
     @Override
-    public List<Person> selectActors() {
+    public List<Person> selectActors() throws SQLException {
         List<Person> actors = new ArrayList<>();
         DataSource dataSource = DataSourceSingleton.getInstance();
         
@@ -109,9 +109,7 @@ public class SqlRepository implements Repository{
                         rs.getString("FirstName"),
                         rs.getString("LastName")));
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } 
         return actors;
     }
 
@@ -135,7 +133,7 @@ public class SqlRepository implements Repository{
     }
 
     @Override
-    public Optional<Movie> selectMovie(int id) {
+    public Optional<Movie> selectMovie(int id) throws SQLException {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(SELECT_MOVIE)) {
@@ -151,7 +149,7 @@ public class SqlRepository implements Repository{
                                 rs.getString("MovieDescription"), 
                                 rs.getInt("Duration"), 
                                 rs.getString("MoviePicturePath"), 
-                                LocalDateTime.parse(rs.getString("MovieBegin"), Movie.DATE_FORMATTER),
+                                LocalDate.parse(rs.getString("MovieBegin"), Movie.POCETAK_FILMA_FORMATTER),
                                 new Genre(rs.getInt("GenreId"),
                         rs.getString("GenreName"))
                                 )
@@ -160,15 +158,12 @@ public class SqlRepository implements Repository{
 
             }
 
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         return Optional.empty();
     }
 
     @Override
-    public void updateMovie(int id, Movie data) {
+    public void updateMovie(int id, Movie data) throws SQLException {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(UPDATE_MOVIE)) {
@@ -182,13 +177,11 @@ public class SqlRepository implements Repository{
             stmt.setInt("@" + "movieId", id);
 
             stmt.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public int createMovie(Movie movie) {
+    public int createMovie(Movie movie) throws SQLException {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(CREATE_MOVIE)) {
@@ -203,14 +196,11 @@ public class SqlRepository implements Repository{
 
             stmt.executeUpdate();
             return stmt.getInt("@" + "movieId");
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return 0;
+        } 
     }
     
     @Override
-    public void createMovies(List<UploadData> movies) throws Exception {
+    public void createMovies(List<UploadData> movies) throws SQLException {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(CREATE_MOVIE)) {
@@ -221,7 +211,7 @@ public class SqlRepository implements Repository{
                 stmt.setString("@" + "pubDate", movie.getMovie().getPubDate().format(Movie.DATE_FORMATTER));
                 stmt.setString("@" + "description", movie.getMovie().getMovieDescription());
                 stmt.setInt("@" + "duration", movie.getMovie().getDuration());
-                stmt.setString("@" + "movieBegin", movie.getMovie().getMovieBegin().format(Movie.DATE_FORMATTER));
+                stmt.setString("@" + "movieBegin", movie.getMovie().getMovieBegin().format(Movie.POCETAK_FILMA_FORMATTER));
                 stmt.setString("@" + "moviePicturePath", movie.getMovie().getMoviePicturePath());
                 stmt.setInt("@" + "genreId", createdGenre);          
                 stmt.registerOutParameter("@" + "movieId", Types.INTEGER);
@@ -229,7 +219,7 @@ public class SqlRepository implements Repository{
                 int createdMovie = stmt.getInt("@" + "movieId");
                 for (Person actor : movie.getActors()) {
                     int createdActor = createActor((Actor) actor);
-                    createCastActor(createdMovie, (Actor) actor);
+                    createCastActor(createdMovie, createdActor);
                 }
                 
             }
@@ -237,7 +227,7 @@ public class SqlRepository implements Repository{
     }
 
     @Override
-    public void deleteMovie(int id) {
+    public void deleteMovie(int id) throws SQLException {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(DELETE_MOVIE)) {
@@ -245,13 +235,11 @@ public class SqlRepository implements Repository{
             stmt.setInt("@" + "movieId", id);
 
             stmt.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public Optional<Director> selectDirector(int id) {
+    public Optional<Director> selectDirector(int id) throws SQLException {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(SELECT_DIRECTOR)) {
@@ -269,15 +257,13 @@ public class SqlRepository implements Repository{
 
             }
 
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return Optional.empty();
     }
 
     @Override
-    public int createDirector(Director director) {
+    public int createDirector(Director director) throws SQLException {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(CREATE_DIRECTOR)) {
@@ -287,14 +273,11 @@ public class SqlRepository implements Repository{
 
             stmt.executeUpdate();
             return stmt.getInt("@" + "directorId");
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return 0;
     }
 
     @Override
-    public void updateDirector(int id, Director director) {
+    public void updateDirector(int id, Director director) throws SQLException {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(UPDATE_DIRECTOR)) {
@@ -303,25 +286,21 @@ public class SqlRepository implements Repository{
             stmt.setInt("@" + "directorId", id);
 
             stmt.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public void deleteDirector(int id) {
+    public void deleteDirector(int id) throws SQLException {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(DELETE_DIRECTOR)) {
             stmt.setInt("@" + "directorId", id);
             stmt.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public Optional<Actor> selectActor(int id) {
+    public Optional<Actor> selectActor(int id) throws SQLException {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(SELECT_ACTOR)) {
@@ -339,15 +318,13 @@ public class SqlRepository implements Repository{
 
             }
 
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return Optional.empty();
     }
 
     @Override
-    public void updateActor(int id, Actor actor) {
+    public void updateActor(int id, Actor actor) throws SQLException {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(UPDATE_ACTOR)) {
@@ -356,13 +333,11 @@ public class SqlRepository implements Repository{
             stmt.setInt("@" + "actorId", id);
 
             stmt.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public int createActor(Actor actor) {
+    public int createActor(Actor actor) throws SQLException {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(CREATE_ACTOR)) {
@@ -372,26 +347,21 @@ public class SqlRepository implements Repository{
 
             stmt.executeUpdate();
             return stmt.getInt("@" + "actorId");
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return 0;
     }
 
     @Override
-    public void deleteActor(int id) {
+    public void deleteActor(int id) throws SQLException {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(DELETE_ACTOR)) {
             stmt.setInt("@" + "actorId", id);
             stmt.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public int registerUser(AppUser user) {
+    public int registerUser(AppUser user) throws SQLException {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(REGISTER_USER)) {
@@ -401,14 +371,11 @@ public class SqlRepository implements Repository{
 
             stmt.executeUpdate();
             return stmt.getInt("@" + "userId");
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return 0;
     }
 
     @Override
-    public Optional<AppUser> authUser(AppUser user) {
+    public Optional<AppUser> authUser(AppUser user) throws SQLException {
        DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(AUTH_USER)) {
@@ -426,41 +393,34 @@ public class SqlRepository implements Repository{
 
             }
 
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        } 
         return Optional.empty();
     }
 
     @Override
-    public void createCastActor(int movieId, Actor actor) {
+    public void createCastActor(int movieId, int actorId) throws SQLException {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(CREATE_CAST_ACTOR)) {
-            stmt.setInt("@" + "actorId", actor.getId());
+            stmt.setInt("@" + "actorId", actorId);
             stmt.setInt("@" + "movieId", movieId);
             stmt.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } 
     }
 
     @Override
-    public void createCastDirector(int movieId, Director director) {
+    public void createCastDirector(int movieId, Director director) throws SQLException {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(CREATE_CAST_DIRECTOR)) {
             stmt.setInt("@" + "directorId", director.getId());
             stmt.setInt("@" + "movieId", movieId);
             stmt.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public Set<Person> selectMovieCastActor(int movieId) {
+    public Set<Person> selectMovieCastActor(int movieId) throws SQLException {
        Set<Person> movieCastActors = new TreeSet<>();
        DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
@@ -477,14 +437,12 @@ public class SqlRepository implements Repository{
 
             }
 
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
         return movieCastActors;
     }
 
     @Override
-    public Optional<AppUser> authAdmin(AppUser user) {
+    public Optional<AppUser> authAdmin(AppUser user) throws SQLException {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(AUTH_ADMIN)) {
@@ -502,26 +460,22 @@ public class SqlRepository implements Repository{
 
             }
 
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return Optional.empty();
     }
 
     @Override
-    public void deleteAllDBData() {
+    public void deleteAllDBData() throws SQLException {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(DELETE_ALL_DB_DATA)) {
             stmt.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public void deleteActorFromMovie(int movieId, int actorId) {
+    public void deleteActorFromMovie(int movieId, int actorId) throws SQLException {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(DELETE_ACTOR_FROM_MOVIE)) {
@@ -530,13 +484,11 @@ public class SqlRepository implements Repository{
             stmt.setInt("@" + "actorId", actorId);
 
             stmt.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public int createGenre(Genre movie) {
+    public int createGenre(Genre movie) throws SQLException {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(CREATE_GENRE)) {
@@ -545,14 +497,11 @@ public class SqlRepository implements Repository{
 
             stmt.executeUpdate();
             return stmt.getInt("@" + "genreId");
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return 0;
     }
 
     @Override
-    public List<Genre> selectGenres() {
+    public List<Genre> selectGenres() throws SQLException {
         List<Genre> genres = new ArrayList<>();
         DataSource dataSource = DataSourceSingleton.getInstance();
         
@@ -564,8 +513,6 @@ public class SqlRepository implements Repository{
                 genres.add(new Genre(rs.getInt("Id"), 
                         rs.getString("GenreName")));
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(SqlRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
         return genres;
     }

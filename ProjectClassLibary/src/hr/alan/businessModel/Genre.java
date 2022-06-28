@@ -5,13 +5,24 @@
  */
 package hr.alan.businessModel;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  *
  * @author Alan
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Genre {
+    @XmlAttribute
     private int id;
+    @XmlElement(name = "genreName")
     private String genreName;
+
+    public Genre() {
+    }
 
     public Genre(int id, String genreName) {
         this.id = id;

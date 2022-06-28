@@ -4,26 +4,42 @@
  */
 package hr.alan.businessModel;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import javax.swing.text.DateFormatter;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 
 /**
  *
  * @author Alan
  */
+@XmlAccessorType(XmlAccessType.FIELD)    
 public class Movie {
     
-    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("EEE, d MMM yyyy HH:mm:ss z").withZone(ZoneId.systemDefault());
+    public static final DateTimeFormatter POCETAK_FILMA_FORMATTER = DateTimeFormatter.ofPattern("d.M.yyyy");
     
+    @XmlAttribute
     private int id;
+    @XmlElement(name = "title")
     private String title;
     private LocalDateTime pubDate;
+    @XmlElement(name = "movieDesc")
     private String movieDescription;
+    @XmlElement(name = "duration")
     private int duration;
+    @XmlElement(name = "picturePath")
     private String moviePicturePath;
-    private LocalDateTime movieBegin;
+    private LocalDate movieBegin;
+    @XmlElement(name = "genre")
     private Genre genre;
+    
 
     public Genre getGenre() {
         return genre;
@@ -33,7 +49,7 @@ public class Movie {
         this.genre = genre;
     }
 
-    public Movie(String title, LocalDateTime pubDate, String movieDescription, int duration, String moviePicturePath, LocalDateTime movieBegin) {
+    public Movie(String title, LocalDateTime pubDate, String movieDescription, int duration, String moviePicturePath, LocalDate movieBegin) {
         this.title = title;
         this.pubDate = pubDate;
         this.movieDescription = movieDescription;
@@ -42,7 +58,7 @@ public class Movie {
         this.movieBegin = movieBegin;
     }
 
-    public Movie(int id, String title, LocalDateTime pubDate, String movieDescription, int duration, String moviePicturePath, LocalDateTime movieBegin, Genre genre) {
+    public Movie(int id, String title, LocalDateTime pubDate, String movieDescription, int duration, String moviePicturePath, LocalDate movieBegin, Genre genre) {
         this.id = id;
         this.title = title;
         this.pubDate = pubDate;
@@ -102,11 +118,11 @@ public class Movie {
         this.moviePicturePath = moviePicturePath;
     }
 
-    public LocalDateTime getMovieBegin() {
+    public LocalDate getMovieBegin() {
         return movieBegin;
     }
 
-    public void setMovieBegin(LocalDateTime movieBegin) {
+    public void setMovieBegin(LocalDate movieBegin) {
         this.movieBegin = movieBegin;
     }
 
