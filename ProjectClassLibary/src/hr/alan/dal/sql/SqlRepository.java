@@ -38,8 +38,8 @@ import javax.swing.JList;
  */
 public class SqlRepository implements Repository{
     
-    private static final String CREATE_MOVIE = "{ CALL createMovie (?,?,?,?,?,?,?,?) }";
-    private static final String UPDATE_MOVIE = "{ CALL updateMovie (?,?,?,?,?,?,?,?) }";
+    private static final String CREATE_MOVIE = "{ CALL createMovie (?,?,?,?,?,?,?,?,?) }";
+    private static final String UPDATE_MOVIE = "{ CALL updateMovie (?,?,?,?,?,?,?,?,?) }";
     private static final String DELETE_MOVIE = "{ CALL deleteMovie (?) }";
     private static final String SELECT_MOVIES = "{ CALL selectMovies }";
     private static final String SELECT_MOVIE = "{ CALL selectMovie (?) }";
@@ -87,7 +87,10 @@ public class SqlRepository implements Repository{
                         rs.getString("MoviePicturePath"), 
                         LocalDate.parse(rs.getString("MovieBegin"), Movie.POCETAK_FILMA_FORMATTER),
                         new Genre(rs.getInt("GenreId"),
-                        rs.getString("GenreName"))
+                        rs.getString("GenreName")),
+                        new Director(rs.getInt("DirectorId"),
+                                rs.getString("DirectorFirstName"),
+                                rs.getString("DirectorLastName"))
                 )
                 );
             }
@@ -151,7 +154,10 @@ public class SqlRepository implements Repository{
                                 rs.getString("MoviePicturePath"), 
                                 LocalDate.parse(rs.getString("MovieBegin"), Movie.POCETAK_FILMA_FORMATTER),
                                 new Genre(rs.getInt("GenreId"),
-                        rs.getString("GenreName"))
+                                    rs.getString("GenreName")),
+                                new Director(rs.getInt("DirectorId"),
+                                rs.getString("DirectorFirstName"),
+                                rs.getString("DirectorLastName"))
                                 )
                     );
                 }
@@ -172,8 +178,9 @@ public class SqlRepository implements Repository{
             stmt.setString("@" + "description", data.getMovieDescription());
             stmt.setInt("@" + "duration", data.getDuration());
             stmt.setInt("@" + "genreId", data.getGenre().getId());
-            stmt.setString("@" + "movieBegin", data.getMovieBegin().format(Movie.DATE_FORMATTER));
+            stmt.setString("@" + "movieBegin", data.getMovieBegin().format(Movie.POCETAK_FILMA_FORMATTER));
             stmt.setString("@" + "moviePicturePath", data.getMoviePicturePath());
+            stmt.setInt("@" + "directorId", data.getDirector().getId());
             stmt.setInt("@" + "movieId", id);
 
             stmt.executeUpdate();
@@ -190,8 +197,9 @@ public class SqlRepository implements Repository{
             stmt.setString("@" + "description", movie.getMovieDescription());
             stmt.setInt("@" + "duration", movie.getDuration());
             stmt.setInt("@" + "genreId", movie.getGenre().getId());
-            stmt.setString("@" + "movieBegin", movie.getMovieBegin().format(Movie.DATE_FORMATTER));
+            stmt.setString("@" + "movieBegin", movie.getMovieBegin().format(Movie.POCETAK_FILMA_FORMATTER));
             stmt.setString("@" + "moviePicturePath", movie.getMoviePicturePath());
+            stmt.setInt("@" + "directorId", movie.getDirector().getId());
             stmt.registerOutParameter("@" + "movieId", Types.INTEGER);
 
             stmt.executeUpdate();
@@ -207,16 +215,21 @@ public class SqlRepository implements Repository{
 
             for (UploadData movie : movies) {
                 int createdGenre = createGenre(movie.getGenre());
+                int createdDirector = createDirector((Director) movie.getMovie().getDirector());
+                
                 stmt.setString("@" + "title", movie.getMovie().getTitle());
                 stmt.setString("@" + "pubDate", movie.getMovie().getPubDate().format(Movie.DATE_FORMATTER));
                 stmt.setString("@" + "description", movie.getMovie().getMovieDescription());
                 stmt.setInt("@" + "duration", movie.getMovie().getDuration());
                 stmt.setString("@" + "movieBegin", movie.getMovie().getMovieBegin().format(Movie.POCETAK_FILMA_FORMATTER));
                 stmt.setString("@" + "moviePicturePath", movie.getMovie().getMoviePicturePath());
-                stmt.setInt("@" + "genreId", createdGenre);          
+                stmt.setInt("@" + "genreId", createdGenre);  
+                stmt.setInt("@" + "directorId", createdDirector);
                 stmt.registerOutParameter("@" + "movieId", Types.INTEGER);
                 stmt.executeUpdate();
                 int createdMovie = stmt.getInt("@" + "movieId");
+                
+                
                 for (Person actor : movie.getActors()) {
                     int createdActor = createActor((Actor) actor);
                     createCastActor(createdMovie, createdActor);

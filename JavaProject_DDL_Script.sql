@@ -26,9 +26,11 @@ ALTER PROC selectMovies
 AS
 BEGIN
 	SELECT Movie.Id, Movie.Title, Movie.PubDate, Movie.MovieDescription, Movie.Duration, Movie.MoviePicturePath,
-	Movie.MovieBegin, MovieGenre.Id AS GenreId, MovieGenre.GenreName AS GenreName
+	Movie.MovieBegin, MovieGenre.Id AS GenreId, MovieGenre.GenreName AS GenreName,
+	Director.Id AS DirectorId, Director.FirstName AS DirectorFirstName, Director.LastName AS DirectorLastName
 	FROM Movie
 	INNER JOIN MovieGenre ON MovieGenre.Id = Movie.MovieGenreId
+	INNER JOIN Director ON Director.Id = Movie.DirectorId
 END
 
 ALTER PROC selectMovie
@@ -36,9 +38,11 @@ ALTER PROC selectMovie
 AS
 BEGIN
 	SELECT Movie.Id, Movie.Title, Movie.PubDate, Movie.MovieDescription, Movie.Duration, Movie.MoviePicturePath,
-	Movie.MovieBegin, MovieGenre.Id AS GenreId, MovieGenre.GenreName AS GenreName
+	Movie.MovieBegin, MovieGenre.Id AS GenreId, MovieGenre.GenreName AS GenreName,
+	Director.Id AS DirectorId, Director.FirstName AS DirectorFirstName, Director.LastName AS DirectorLastName
 	FROM Movie
 	INNER JOIN MovieGenre ON MovieGenre.Id = Movie.MovieGenreId
+	INNER JOIN Director ON Director.Id = Movie.DirectorId
 	WHERE Movie.Id = @movieId
 END
 
@@ -50,11 +54,12 @@ ALTER PROC createMovie
 	@movieBegin NVARCHAR(90),
 	@moviePicturePath NVARCHAR(MAX),
 	@genreId INT,
+	@directorId INT,
 	@movieId INT OUTPUT
 AS
 BEGIN
-	INSERT INTO Movie(Title, PubDate, MovieDescription, Duration, MovieBegin, MoviePicturePath, MovieGenreId)
-	VALUES (@title, @pubDate, @description, @duration, @movieBegin, @moviePicturePath, @genreId)
+	INSERT INTO Movie(Title, PubDate, MovieDescription, Duration, MovieBegin, MoviePicturePath, MovieGenreId, DirectorId)
+	VALUES (@title, @pubDate, @description, @duration, @movieBegin, @moviePicturePath, @genreId, @directorId)
 
 	SET @movieId = SCOPE_IDENTITY()
 END
@@ -91,18 +96,22 @@ ALTER PROC updateMovie
 	@movieBegin NVARCHAR(90),
 	@moviePicturePath NVARCHAR(MAX),
 	@genreId INT,
+	@directorId INT,
 	@movieId INT
 AS
 BEGIN
 	UPDATE Movie
-	SET Title = @title, MovieGenreId = @genreId, PubDate = @pubDate, MovieDescription = @description, Duration = @duration, MovieBegin = @movieBegin, MoviePicturePath = @moviePicturePath
+	SET Title = @title, MovieGenreId = @genreId, PubDate = @pubDate, MovieDescription = @description, Duration = @duration, MovieBegin = @movieBegin
+	, MoviePicturePath = @moviePicturePath, DirectorId = @directorId
 	WHERE Id = @movieId
 END
 
 CREATE PROCEDURE deleteMovie
 	@movieId INT	 
 AS 
-BEGIN 
+BEGIN
+	DELETE FROM MovieCast WHERE MovieId = @movieId
+
 	DELETE  
 	FROM Movie
 	WHERE Id = @movieId
@@ -153,7 +162,7 @@ BEGIN
 		END
 END
 
-CREATE PROC updateActor
+ALTER PROC updateActor
 	@firstName NVARCHAR(25),
 	@lastName NVARCHAR(25),
 	@actorId INT
@@ -164,10 +173,14 @@ BEGIN
 	WHERE Id = @actorId
 END
 
-CREATE PROCEDURE deleteActor
+ALTER PROCEDURE deleteActor
 	@actorId INT	 
 AS 
-BEGIN 
+BEGIN
+	DELETE
+	FROM MovieCast
+	WHERE ActorId = @actorId
+
 	DELETE  
 	FROM Actor
 	WHERE Id = @actorId
@@ -180,32 +193,41 @@ CREATE TABLE Director
 	LastName NVARCHAR(25) NOT NULL
 )
 
-CREATE PROC selectDirectors
+ALTER PROC selectDirectors
 AS
 BEGIN
 	SELECT * FROM Director
 END
 
-CREATE PROC selectDirector
+ALTER PROC selectDirector
 	@directorId INT
 AS
 BEGIN
 	SELECT * FROM Director WHERE Id = @directorId
 END
 
-CREATE PROC createDirector
+ALTER PROC createDirector
 	@firstName NVARCHAR(25),
 	@lastName NVARCHAR(25),
 	@directorId INT OUTPUT
 AS
 BEGIN
-	INSERT INTO Director
-	VALUES (@firstName, @lastName)
+	IF EXISTS(SELECT * FROM Director WHERE FirstName LIKE @firstName AND LastName LIKE @lastName)
+		BEGIN
+			SELECT @directorId = Id FROM Director WHERE FirstName LIKE @firstName AND LastName LIKE @lastName
+		END
+	ELSE
+		BEGIN
+			INSERT INTO Director
+			VALUES (@firstName, @lastName)
 
-	SET @directorId = SCOPE_IDENTITY()
+			SET @directorId = SCOPE_IDENTITY()
+		END
 END
 
-CREATE PROC updateDirector
+SELECT * FROM Director WHERE FirstName = 'Kyle' AND LastName = 'Balda'
+
+ALTER PROC updateDirector
 	@firstName NVARCHAR(25),
 	@lastName NVARCHAR(25),
 	@directorId INT
@@ -216,7 +238,7 @@ BEGIN
 	WHERE Id = @directorId
 END
 
-CREATE PROCEDURE deleteDirector
+ALTER PROCEDURE deleteDirector
 	@directorId INT	 
 AS 
 BEGIN 
@@ -224,6 +246,7 @@ BEGIN
 	FROM Director
 	WHERE Id = @directorId
 END
+
 
 CREATE TABLE MovieCast
 (

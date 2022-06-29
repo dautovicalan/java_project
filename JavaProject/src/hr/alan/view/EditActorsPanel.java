@@ -197,6 +197,7 @@ public class EditActorsPanel extends javax.swing.JPanel {
 
         } catch (Exception ex) {
             Logger.getLogger(EditMoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage("Error", "Something went wrong. Contact BOSS");
         }
     }//GEN-LAST:event_btnAddActionPerformed
 
@@ -219,7 +220,7 @@ public class EditActorsPanel extends javax.swing.JPanel {
 
         } catch (Exception ex) {
             Logger.getLogger(EditMoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
-
+            MessageUtils.showErrorMessage("Error", "Something went wrong. Contact BOSS");
         }
     }//GEN-LAST:event_btnUpdateActionPerformed
 
@@ -237,6 +238,7 @@ public class EditActorsPanel extends javax.swing.JPanel {
                 
             } catch (Exception ex) {
                 Logger.getLogger(EditMoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
+                MessageUtils.showErrorMessage("Error", "Something went wrong. Contact BOSS");
             }
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
@@ -319,6 +321,7 @@ public class EditActorsPanel extends javax.swing.JPanel {
                 fillForm(selectedActor);
             }
         } catch (Exception e) {
+            MessageUtils.showErrorMessage("Error", "Something went wrong. Contact BOSS");
         }
     }
     

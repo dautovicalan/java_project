@@ -16,9 +16,8 @@ import hr.alan.dal.Repository;
 import hr.alan.dal.RepositoryFactory;
 import hr.algebra.utils.JAXBUtils;
 import hr.algebra.utils.MessageUtils;
+import hr.algebra.utils.PrepareArchiveUtils;
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -32,7 +31,6 @@ import javax.swing.JComponent;
 import javax.swing.ListSelectionModel;
 import javax.swing.TransferHandler;
 import static javax.swing.TransferHandler.COPY;
-import javax.xml.bind.JAXBException;
 
 /**
  *
@@ -183,6 +181,7 @@ public class DragAndDropPanel extends javax.swing.JPanel implements PersonAddabl
             loadMovieCast();
         } catch (Exception ex) {
             Logger.getLogger(DragAndDropPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage("Error", "Something went wrong. Contact BOSS");
         }
     }//GEN-LAST:event_cbMoviesActionPerformed
 
@@ -201,6 +200,7 @@ public class DragAndDropPanel extends javax.swing.JPanel implements PersonAddabl
             loadMovieCast();
         } catch (Exception ex) {
             Logger.getLogger(DragAndDropPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage("Error", "Something went wrong. Contact BOSS");
         }
         
     }//GEN-LAST:event_btnRemoveActorActionPerformed
@@ -300,18 +300,7 @@ public class DragAndDropPanel extends javax.swing.JPanel implements PersonAddabl
     }
 
     private MovieArchive prepareArchive() throws Exception{
-        List<MovieCast> movieCast = new ArrayList<>();
-        List<Movie> movies = repo.selectMovies();
-        movies.forEach((movie) -> {
-            Set<Person> selectMovieCastActor = null;
-            try {
-                selectMovieCastActor = repo.selectMovieCastActor(movie.getId());
-            } catch (Exception ex) {
-                Logger.getLogger(DragAndDropPanel.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            movieCast.add(new MovieCast(selectMovieCastActor, movie));
-        });
-        return new MovieArchive(movieCast);
+        return PrepareArchiveUtils.prepareArchive();
     }
     
     private class ExportHandler extends TransferHandler {
@@ -346,8 +335,6 @@ public class DragAndDropPanel extends javax.swing.JPanel implements PersonAddabl
                     loadMovieCast();
                     return true;
                 }                
-            } catch (UnsupportedFlavorException | IOException ex) {
-                Logger.getLogger(DragAndDropPanel.class.getName()).log(Level.SEVERE, null, ex);
             } catch (Exception ex) {
                 Logger.getLogger(DragAndDropPanel.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -39,22 +39,30 @@ public class DatabasePreparerUtils {
        FileUtils.copyFromUrl(item.getPlakat(), destination);
        
        Genre movieGenre = new Genre(item.getZanr());
-       int duration = item.getTrajanje().length() > 0 ? Integer.parseInt(item.getTrajanje())
-               : 0;
-       LocalDate parse = LocalDate.parse(item.getPocetak(), Movie.POCETAK_FILMA_FORMATTER);
+ 
        Movie movie = new Movie(
                item.getTitle(), 
                LocalDateTime.parse(item.getPubDate(), Movie.DATE_FORMATTER), 
                item.getDescription(), 
-               duration, 
+               item.getTrajanje().length() > 0 ? Integer.parseInt(item.getTrajanje())
+               : 0, 
                destination, 
-               LocalDate.parse(item.getPocetak(), Movie.POCETAK_FILMA_FORMATTER));
+               LocalDate.parse(item.getPocetak(), Movie.POCETAK_FILMA_FORMATTER),
+               movieGenre, 
+               (Director) parseDirector(item.getRedatelj()));
        
-       Person director = new Director(item.getRedatelj(), item.getRedatelj());
        List<Person> listOfActors = parseActors(item.getGlumci());
             
-       return new UploadData(movie, listOfActors, director, movieGenre);
+       return new UploadData(movie, listOfActors, movieGenre);
    }
+   
+   private static Person parseDirector(String redatelj) {
+       if ("".equals(redatelj)) {
+           return new Director("No First Name", "No Last Name");
+       }
+       String[] split = redatelj.split(" ", -1);
+       return new Director(split[0].trim(), split[1].trim());
+    }
    
    private static List<Person> parseActors(String glumci) {
         if ("".equals(glumci)) {

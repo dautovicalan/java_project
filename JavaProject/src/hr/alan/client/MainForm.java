@@ -5,12 +5,16 @@
 package hr.alan.client;
 
 import hr.alan.businessModel.Movie;
+import hr.alan.businessModel.MovieArchive;
 import hr.alan.dal.Repository;
 import hr.alan.dal.RepositoryFactory;
 import hr.alan.view.DragAndDropPanel;
 import hr.alan.view.EditActorsPanel;
 import hr.alan.view.EditDirectorsPanel;
 import hr.alan.view.EditMoviesPanel;
+import hr.algebra.utils.JAXBUtils;
+import hr.algebra.utils.MessageUtils;
+import hr.algebra.utils.PrepareArchiveUtils;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,6 +29,8 @@ public class MainForm extends javax.swing.JFrame {
     /**
      * Creates new form MainForm
      */
+    private static final String FILENAME = "moviearchive.xml";
+    
     public MainForm() {
         initComponents();
         initPanels();
@@ -40,9 +46,92 @@ public class MainForm extends javax.swing.JFrame {
     private void initComponents() {
 
         tpMainPane = new javax.swing.JTabbedPane();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jmiSaveXml = new javax.swing.JMenuItem();
+        jmiLogout = new javax.swing.JMenuItem();
+        jmiExit = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        jmiOpenMovies = new javax.swing.JMenuItem();
+        jmiOpenDirectors = new javax.swing.JMenuItem();
+        jmiOpenActors = new javax.swing.JMenuItem();
+        jmiOpenDragDrop = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MOVIE APP");
+
+        jMenu1.setText("Actions");
+
+        jmiSaveXml.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        jmiSaveXml.setText("Save XML");
+        jmiSaveXml.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiSaveXmlActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jmiSaveXml);
+
+        jmiLogout.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
+        jmiLogout.setText("Logout");
+        jmiLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiLogoutActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jmiLogout);
+
+        jmiExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
+        jmiExit.setText("Exit");
+        jmiExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiExitActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jmiExit);
+
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setText("Navigation");
+
+        jmiOpenMovies.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_1, java.awt.event.InputEvent.CTRL_MASK));
+        jmiOpenMovies.setText("Open movies");
+        jmiOpenMovies.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiOpenMoviesActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jmiOpenMovies);
+
+        jmiOpenDirectors.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_2, java.awt.event.InputEvent.CTRL_MASK));
+        jmiOpenDirectors.setText("Open directors");
+        jmiOpenDirectors.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiOpenDirectorsActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jmiOpenDirectors);
+
+        jmiOpenActors.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_3, java.awt.event.InputEvent.CTRL_MASK));
+        jmiOpenActors.setText("Open actors");
+        jmiOpenActors.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiOpenActorsActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jmiOpenActors);
+
+        jmiOpenDragDrop.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_4, java.awt.event.InputEvent.CTRL_MASK));
+        jmiOpenDragDrop.setText("Open drag and drop");
+        jmiOpenDragDrop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiOpenDragDropActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jmiOpenDragDrop);
+
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -57,13 +146,50 @@ public class MainForm extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(tpMainPane, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+                .addComponent(tpMainPane, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jmiExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiExitActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_jmiExitActionPerformed
+
+    private void jmiLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiLogoutActionPerformed
+        this.dispose();
+        LoginForm.main(null);
+    }//GEN-LAST:event_jmiLogoutActionPerformed
+
+    private void jmiOpenMoviesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiOpenMoviesActionPerformed
+        tpMainPane.setSelectedIndex(0);
+    }//GEN-LAST:event_jmiOpenMoviesActionPerformed
+
+    private void jmiOpenDirectorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiOpenDirectorsActionPerformed
+        tpMainPane.setSelectedIndex(1);
+    }//GEN-LAST:event_jmiOpenDirectorsActionPerformed
+
+    private void jmiOpenActorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiOpenActorsActionPerformed
+        tpMainPane.setSelectedIndex(2);
+    }//GEN-LAST:event_jmiOpenActorsActionPerformed
+
+    private void jmiOpenDragDropActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiOpenDragDropActionPerformed
+        tpMainPane.setSelectedIndex(3);
+    }//GEN-LAST:event_jmiOpenDragDropActionPerformed
+
+    private void jmiSaveXmlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSaveXmlActionPerformed
+        MovieArchive archive;
+        try {
+            archive = PrepareArchiveUtils.prepareArchive();
+            JAXBUtils.save(archive, FILENAME);
+            MessageUtils.showInformationMessage("Success", "Movie Archive saved");
+        } catch (Exception ex) {
+            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            
+    }//GEN-LAST:event_jmiSaveXmlActionPerformed
 
     /**
      * @param args the command line arguments
@@ -103,6 +229,16 @@ public class MainForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jmiExit;
+    private javax.swing.JMenuItem jmiLogout;
+    private javax.swing.JMenuItem jmiOpenActors;
+    private javax.swing.JMenuItem jmiOpenDirectors;
+    private javax.swing.JMenuItem jmiOpenDragDrop;
+    private javax.swing.JMenuItem jmiOpenMovies;
+    private javax.swing.JMenuItem jmiSaveXml;
     private javax.swing.JTabbedPane tpMainPane;
     // End of variables declaration//GEN-END:variables
 

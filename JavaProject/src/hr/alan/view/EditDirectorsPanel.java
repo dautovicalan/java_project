@@ -204,6 +204,7 @@ public class EditDirectorsPanel extends javax.swing.JPanel {
 
         } catch (Exception ex) {
             Logger.getLogger(EditMoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage("Error", "Something went wrong. Contact BOSS");
         }
     }//GEN-LAST:event_btnAddActionPerformed
 
@@ -226,9 +227,17 @@ public class EditDirectorsPanel extends javax.swing.JPanel {
 
         } catch (Exception ex) {
             Logger.getLogger(EditMoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
-
+            MessageUtils.showErrorMessage("Error", "Something went wrong. Contact BOSS");
         }
     }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void tbDirectorsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbDirectorsMouseClicked
+        showDirector();
+    }//GEN-LAST:event_tbDirectorsMouseClicked
+
+    private void tbDirectorsKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbDirectorsKeyReleased
+        showDirector();
+    }//GEN-LAST:event_tbDirectorsKeyReleased
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         if (selectedDirector == null) {
@@ -239,22 +248,15 @@ public class EditDirectorsPanel extends javax.swing.JPanel {
             try {
                 repo.deleteDirector(selectedDirector.getId());
                 directorsTableModel.setArticles(repo.selectDirectors());
-                
+
                 clearForm();
-                
+
             } catch (Exception ex) {
                 Logger.getLogger(EditMoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
+                MessageUtils.showErrorMessage("Error", "Something went wrong. Contact BOSS");
             }
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
-
-    private void tbDirectorsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbDirectorsMouseClicked
-        showDirector();
-    }//GEN-LAST:event_tbDirectorsMouseClicked
-
-    private void tbDirectorsKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbDirectorsKeyReleased
-        showDirector();
-    }//GEN-LAST:event_tbDirectorsKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -321,6 +323,7 @@ public class EditDirectorsPanel extends javax.swing.JPanel {
                 fillForm(selectedDirector);
             }
         } catch (Exception e) {
+            MessageUtils.showErrorMessage("Error", "Something went wrong. Contact BOSS");
         }
     }
     
@@ -339,6 +342,5 @@ public class EditDirectorsPanel extends javax.swing.JPanel {
             entry.getValue().setText(entry.getKey().getText().trim().isEmpty() ? "X" : "");
         }
         return ok;
-
     }
 }

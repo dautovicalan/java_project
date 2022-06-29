@@ -8,8 +8,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import javax.swing.text.DateFormatter;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -39,6 +37,15 @@ public class Movie {
     private LocalDate movieBegin;
     @XmlElement(name = "genre")
     private Genre genre;
+    private Director director;
+
+    public Director getDirector() {
+        return director;
+    }
+
+    public void setDirector(Director director) {
+        this.director = director;
+    }
     
 
     public Genre getGenre() {
@@ -49,16 +56,18 @@ public class Movie {
         this.genre = genre;
     }
 
-    public Movie(String title, LocalDateTime pubDate, String movieDescription, int duration, String moviePicturePath, LocalDate movieBegin) {
+    public Movie(String title, LocalDateTime pubDate, String movieDescription, int duration, String moviePicturePath, LocalDate movieBegin, Genre genre, Director director) {
         this.title = title;
         this.pubDate = pubDate;
         this.movieDescription = movieDescription;
         this.duration = duration;
         this.moviePicturePath = moviePicturePath;
         this.movieBegin = movieBegin;
+        this.genre = genre;
+        this.director = director;
     }
 
-    public Movie(int id, String title, LocalDateTime pubDate, String movieDescription, int duration, String moviePicturePath, LocalDate movieBegin, Genre genre) {
+    public Movie(int id, String title, LocalDateTime pubDate, String movieDescription, int duration, String moviePicturePath, LocalDate movieBegin, Genre genre, Director director) {
         this.id = id;
         this.title = title;
         this.pubDate = pubDate;
@@ -67,6 +76,7 @@ public class Movie {
         this.moviePicturePath = moviePicturePath;
         this.movieBegin = movieBegin;
         this.genre = genre;
+        this.director = director;
     }
     
 

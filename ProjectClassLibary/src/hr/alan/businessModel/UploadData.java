@@ -14,13 +14,11 @@ import java.util.List;
 public class UploadData {
     private Movie movie;
     private List<Person> actors;
-    private Person director;
     private Genre genre;
 
-    public UploadData(Movie movie, List<Person> actors, Person director, Genre genre) {
+    public UploadData(Movie movie, List<Person> actors, Genre genre) {
         this.movie = movie;
         this.actors = actors;
-        this.director = director;
         this.genre = genre;
     }
 
@@ -38,14 +36,6 @@ public class UploadData {
 
     public void setActors(List<Person> actors) {
         this.actors = actors;
-    }
-
-    public Person getDirector() {
-        return director;
-    }
-
-    public void setDirector(Person director) {
-        this.director = director;
     }
 
     public Genre getGenre() {

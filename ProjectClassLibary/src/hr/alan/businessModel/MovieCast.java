@@ -23,6 +23,7 @@ public class MovieCast {
     private Movie movie;
     @XmlElement(name = "actor")
     private Set<Person> actors;
+    @XmlElement(name = "director")
     private Director director;
 
     public MovieCast(Set<Person> actors, Movie movie) {
