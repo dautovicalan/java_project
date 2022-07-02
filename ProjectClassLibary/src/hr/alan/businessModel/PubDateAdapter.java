@@ -5,23 +5,23 @@
  */
 package hr.alan.businessModel;
 
+import java.time.LocalDate;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import sun.util.resources.LocaleData;
 
 /**
  *
  * @author Alan
  */
-public class PubDateAdapter extends XmlAdapter<String, LocaleData>{
+public class PubDateAdapter extends XmlAdapter<String, LocalDate>{
 
     @Override
-    public LocaleData unmarshal(String v) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public LocalDate unmarshal(String text) throws Exception {
+        return LocalDate.parse(text, Movie.POCETAK_FILMA_FORMATTER);
     }
 
     @Override
-    public String marshal(LocaleData v) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public String marshal(LocalDate date) throws Exception {
+        return date.format(Movie.POCETAK_FILMA_FORMATTER);
     }
     
 }

@@ -24,19 +24,24 @@ public class MovieCast {
     @XmlElement(name = "actor")
     private Set<Person> actors;
     @XmlElement(name = "director")
-    private Director director;
+    private Person director;
 
-    public MovieCast(Set<Person> actors, Movie movie) {
+    public Person getDirector() {
+        return director;
+    }
+
+    public void setDirector(Director director) {
+        this.director = director;
+    }
+
+    public MovieCast(Set<Person> actors, Movie movie, Director director) {
         this.actors = actors;
         this.movie = movie;
+        this.director = director;
     }
 
     public Set<Person> getActor() {
         return actors;
-    }
-
-    public Director getDirector() {
-        return director;
     }
 
     public Movie getMovie() {

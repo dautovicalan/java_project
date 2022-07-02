@@ -9,6 +9,7 @@ import hr.alan.businessModel.MovieArchive;
 import hr.alan.dal.Repository;
 import hr.alan.dal.RepositoryFactory;
 import hr.alan.view.DragAndDropPanel;
+import hr.alan.view.DragAndDropPanelDirectors;
 import hr.alan.view.EditActorsPanel;
 import hr.alan.view.EditDirectorsPanel;
 import hr.alan.view.EditMoviesPanel;
@@ -56,6 +57,7 @@ public class MainForm extends javax.swing.JFrame {
         jmiOpenDirectors = new javax.swing.JMenuItem();
         jmiOpenActors = new javax.swing.JMenuItem();
         jmiOpenDragDrop = new javax.swing.JMenuItem();
+        jmiOpenDragDrop1 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MOVIE APP");
@@ -129,6 +131,15 @@ public class MainForm extends javax.swing.JFrame {
         });
         jMenu2.add(jmiOpenDragDrop);
 
+        jmiOpenDragDrop1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_5, java.awt.event.InputEvent.CTRL_MASK));
+        jmiOpenDragDrop1.setText("Open drag and drop bosses");
+        jmiOpenDragDrop1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiOpenDragDrop1ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jmiOpenDragDrop1);
+
         jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
@@ -191,6 +202,10 @@ public class MainForm extends javax.swing.JFrame {
             
     }//GEN-LAST:event_jmiSaveXmlActionPerformed
 
+    private void jmiOpenDragDrop1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiOpenDragDrop1ActionPerformed
+        tpMainPane.setSelectedIndex(4);
+    }//GEN-LAST:event_jmiOpenDragDrop1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -222,8 +237,8 @@ public class MainForm extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 MainForm form = new MainForm();
-                form.setVisible(true);
                 form.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                form.setVisible(true);
             }
         });
     }
@@ -237,6 +252,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiOpenActors;
     private javax.swing.JMenuItem jmiOpenDirectors;
     private javax.swing.JMenuItem jmiOpenDragDrop;
+    private javax.swing.JMenuItem jmiOpenDragDrop1;
     private javax.swing.JMenuItem jmiOpenMovies;
     private javax.swing.JMenuItem jmiSaveXml;
     private javax.swing.JTabbedPane tpMainPane;
@@ -246,7 +262,8 @@ public class MainForm extends javax.swing.JFrame {
         tpMainPane.add("MOVIES", new EditMoviesPanel());
         tpMainPane.add("DIRECTORS", new EditDirectorsPanel());
         tpMainPane.add("ACTORS", new EditActorsPanel());
-        tpMainPane.add("DRAG N DROP", new DragAndDropPanel());
+        tpMainPane.add("DRAG N DROP ACTORS", new DragAndDropPanel());
+        tpMainPane.add("DRAG N DROP BOSSES", new DragAndDropPanelDirectors());
     }
     
 }

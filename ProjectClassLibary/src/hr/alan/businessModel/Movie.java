@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  *
@@ -34,19 +35,11 @@ public class Movie {
     private int duration;
     @XmlElement(name = "picturePath")
     private String moviePicturePath;
+    @XmlJavaTypeAdapter(PubDateAdapter.class)
+    @XmlElement(name = "movieBegin")
     private LocalDate movieBegin;
     @XmlElement(name = "genre")
     private Genre genre;
-    private Director director;
-
-    public Director getDirector() {
-        return director;
-    }
-
-    public void setDirector(Director director) {
-        this.director = director;
-    }
-    
 
     public Genre getGenre() {
         return genre;
@@ -56,7 +49,7 @@ public class Movie {
         this.genre = genre;
     }
 
-    public Movie(String title, LocalDateTime pubDate, String movieDescription, int duration, String moviePicturePath, LocalDate movieBegin, Genre genre, Director director) {
+    public Movie(String title, LocalDateTime pubDate, String movieDescription, int duration, String moviePicturePath, LocalDate movieBegin, Genre genre) {
         this.title = title;
         this.pubDate = pubDate;
         this.movieDescription = movieDescription;
@@ -64,10 +57,9 @@ public class Movie {
         this.moviePicturePath = moviePicturePath;
         this.movieBegin = movieBegin;
         this.genre = genre;
-        this.director = director;
     }
 
-    public Movie(int id, String title, LocalDateTime pubDate, String movieDescription, int duration, String moviePicturePath, LocalDate movieBegin, Genre genre, Director director) {
+    public Movie(int id, String title, LocalDateTime pubDate, String movieDescription, int duration, String moviePicturePath, LocalDate movieBegin, Genre genre) {
         this.id = id;
         this.title = title;
         this.pubDate = pubDate;
@@ -76,7 +68,6 @@ public class Movie {
         this.moviePicturePath = moviePicturePath;
         this.movieBegin = movieBegin;
         this.genre = genre;
-        this.director = director;
     }
     
 

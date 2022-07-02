@@ -26,11 +26,9 @@ ALTER PROC selectMovies
 AS
 BEGIN
 	SELECT Movie.Id, Movie.Title, Movie.PubDate, Movie.MovieDescription, Movie.Duration, Movie.MoviePicturePath,
-	Movie.MovieBegin, MovieGenre.Id AS GenreId, MovieGenre.GenreName AS GenreName,
-	Director.Id AS DirectorId, Director.FirstName AS DirectorFirstName, Director.LastName AS DirectorLastName
+	Movie.MovieBegin, MovieGenre.Id AS GenreId, MovieGenre.GenreName AS GenreName
 	FROM Movie
 	INNER JOIN MovieGenre ON MovieGenre.Id = Movie.MovieGenreId
-	INNER JOIN Director ON Director.Id = Movie.DirectorId
 END
 
 ALTER PROC selectMovie
@@ -38,11 +36,9 @@ ALTER PROC selectMovie
 AS
 BEGIN
 	SELECT Movie.Id, Movie.Title, Movie.PubDate, Movie.MovieDescription, Movie.Duration, Movie.MoviePicturePath,
-	Movie.MovieBegin, MovieGenre.Id AS GenreId, MovieGenre.GenreName AS GenreName,
-	Director.Id AS DirectorId, Director.FirstName AS DirectorFirstName, Director.LastName AS DirectorLastName
+	Movie.MovieBegin, MovieGenre.Id AS GenreId, MovieGenre.GenreName AS GenreName
 	FROM Movie
 	INNER JOIN MovieGenre ON MovieGenre.Id = Movie.MovieGenreId
-	INNER JOIN Director ON Director.Id = Movie.DirectorId
 	WHERE Movie.Id = @movieId
 END
 
@@ -54,12 +50,11 @@ ALTER PROC createMovie
 	@movieBegin NVARCHAR(90),
 	@moviePicturePath NVARCHAR(MAX),
 	@genreId INT,
-	@directorId INT,
 	@movieId INT OUTPUT
 AS
 BEGIN
-	INSERT INTO Movie(Title, PubDate, MovieDescription, Duration, MovieBegin, MoviePicturePath, MovieGenreId, DirectorId)
-	VALUES (@title, @pubDate, @description, @duration, @movieBegin, @moviePicturePath, @genreId, @directorId)
+	INSERT INTO Movie(Title, PubDate, MovieDescription, Duration, MovieBegin, MoviePicturePath, MovieGenreId)
+	VALUES (@title, @pubDate, @description, @duration, @movieBegin, @moviePicturePath, @genreId)
 
 	SET @movieId = SCOPE_IDENTITY()
 END
@@ -96,13 +91,12 @@ ALTER PROC updateMovie
 	@movieBegin NVARCHAR(90),
 	@moviePicturePath NVARCHAR(MAX),
 	@genreId INT,
-	@directorId INT,
 	@movieId INT
 AS
 BEGIN
 	UPDATE Movie
 	SET Title = @title, MovieGenreId = @genreId, PubDate = @pubDate, MovieDescription = @description, Duration = @duration, MovieBegin = @movieBegin
-	, MoviePicturePath = @moviePicturePath, DirectorId = @directorId
+	, MoviePicturePath = @moviePicturePath
 	WHERE Id = @movieId
 END
 
@@ -255,6 +249,15 @@ CREATE TABLE MovieCast
 	ActorId INT FOREIGN KEY REFERENCES Actor(Id)
 )
 
+CREATE PROC deleteDirectorFromMovie
+	@movieId INT,
+	@directorId INT
+AS
+BEGIN
+	DELETE FROM MovieDirectors
+	WHERE MovieId = @movieId AND DirectorId = @directorId
+END
+
 CREATE TABLE AppUser
 (
 	Id INT PRIMARY KEY IDENTITY(1,1),
@@ -336,6 +339,16 @@ BEGIN
 	SELECT Actor.Id, Actor.FirstName, Actor.LastName
 	FROM MovieCast
 	INNER JOIN Actor ON Actor.Id = MovieCast.ActorId
+	WHERE MovieId = @movieId
+END
+
+CREATE PROC selectMovieDirectors
+	@movieId INT
+AS
+BEGIN
+	SELECT Director.Id, Director.FirstName, Director.LastName
+	FROM MovieDirectors
+	INNER JOIN Director ON Director.Id = MovieDirectors.DirectorId
 	WHERE MovieId = @movieId
 END
 

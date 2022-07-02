@@ -15,11 +15,21 @@ public class UploadData {
     private Movie movie;
     private List<Person> actors;
     private Genre genre;
+    private Director director;
 
-    public UploadData(Movie movie, List<Person> actors, Genre genre) {
+    public Director getDirector() {
+        return director;
+    }
+
+    public void setDirector(Director director) {
+        this.director = director;
+    }
+
+    public UploadData(Movie movie, List<Person> actors, Genre genre, Director director) {
         this.movie = movie;
         this.actors = actors;
         this.genre = genre;
+        this.director = director;
     }
 
     public Movie getMovie() {

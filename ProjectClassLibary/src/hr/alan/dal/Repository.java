@@ -48,7 +48,8 @@ public interface Repository {
     int createDirector(Director director) throws Exception;
     void updateDirector(int id, Director director) throws Exception;
     void deleteDirector(int id) throws Exception;
-    void createCastDirector(int movieId, Director director) throws Exception;
+    void createCastDirector(int movieId, int directorId) throws Exception;
+    void deleteDirectorFromMovie(int movieId, int directorId) throws Exception;
     
     int registerUser(AppUser user) throws Exception;
     Optional<AppUser> authAdmin(AppUser user) throws Exception;
@@ -56,5 +57,7 @@ public interface Repository {
 
 
     void deleteAllDBData() throws Exception;
+
+    Optional<Person> selectMovieDirectors(int movieId) throws Exception;
         
 }

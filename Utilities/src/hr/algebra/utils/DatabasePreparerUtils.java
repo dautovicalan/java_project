@@ -48,12 +48,13 @@ public class DatabasePreparerUtils {
                : 0, 
                destination, 
                LocalDate.parse(item.getPocetak(), Movie.POCETAK_FILMA_FORMATTER),
-               movieGenre, 
-               (Director) parseDirector(item.getRedatelj()));
+               movieGenre
+               );
        
        List<Person> listOfActors = parseActors(item.getGlumci());
+       Director director = (Director) parseDirector(item.getRedatelj());
             
-       return new UploadData(movie, listOfActors, movieGenre);
+       return new UploadData(movie, listOfActors, movieGenre, director);
    }
    
    private static Person parseDirector(String redatelj) {

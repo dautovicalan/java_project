@@ -86,8 +86,6 @@ public class EditMoviesPanel extends javax.swing.JPanel {
         tfDuration = new javax.swing.JSpinner();
         cbMovieGenre = new javax.swing.JComboBox<>();
         jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        cbMovieDirector = new javax.swing.JComboBox<>();
 
         setPreferredSize(new java.awt.Dimension(726, 425));
         addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -182,8 +180,6 @@ public class EditMoviesPanel extends javax.swing.JPanel {
 
         jLabel6.setText("Genre:");
 
-        jLabel7.setText("Director");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -212,11 +208,7 @@ public class EditMoviesPanel extends javax.swing.JPanel {
                                     .addComponent(lbDescError, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addComponent(cbMovieGenre, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(cbMovieDirector, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(cbMovieGenre, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -284,25 +276,20 @@ public class EditMoviesPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lbIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(46, 46, 46)
-                                        .addComponent(lbDescError, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(67, 67, 67)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(tfMovieStart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(lbMovieStartError, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                            .addComponent(cbMovieGenre, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(cbMovieDirector, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(46, 46, 46)
+                                    .addComponent(lbDescError, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(67, 67, 67)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(tfMovieStart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lbMovieStartError, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(cbMovieGenre, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnAdd)
@@ -342,8 +329,7 @@ public class EditMoviesPanel extends javax.swing.JPanel {
                     tfDuration.getComponentCount(),
                     localPath,
                     LocalDate.parse(tfMovieStart.getText(), Movie.POCETAK_FILMA_FORMATTER),
-                    ((Genre)cbMovieGenre.getSelectedItem()), 
-                    (Director) cbMovieDirector.getSelectedItem()
+                    ((Genre)cbMovieGenre.getSelectedItem())
             );
 
             repo.createMovie(movie);
@@ -384,7 +370,6 @@ public class EditMoviesPanel extends javax.swing.JPanel {
             selectedMovie.setDuration((int) tfDuration.getValue());
             selectedMovie.setMovieBegin(LocalDate.parse(tfMovieStart.getText(), Movie.POCETAK_FILMA_FORMATTER));
             selectedMovie.setGenre((Genre) cbMovieGenre.getSelectedItem());
-            selectedMovie.setDirector((Director) cbMovieDirector.getSelectedItem());
             
             repo.updateMovie(selectedMovie.getId(), selectedMovie);
             moviesTableModel.setArticles(repo.selectMovies());
@@ -438,7 +423,6 @@ public class EditMoviesPanel extends javax.swing.JPanel {
     private javax.swing.JButton btnChoose;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnUpdate;
-    private javax.swing.JComboBox<Object> cbMovieDirector;
     private javax.swing.JComboBox<Object> cbMovieGenre;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -446,7 +430,6 @@ public class EditMoviesPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lbDescError;
@@ -540,9 +523,6 @@ public class EditMoviesPanel extends javax.swing.JPanel {
         ComboBoxModel<Object> model = cbMovieGenre.getModel();
         model.setSelectedItem(movie.getGenre());
         cbMovieGenre.setModel(model);
-        ComboBoxModel<Object> directorModel = cbMovieDirector.getModel();
-        directorModel.setSelectedItem(movie.getDirector());
-        cbMovieDirector.setModel(directorModel);
     }
     
     private static final String DIR = "assets";
@@ -582,6 +562,5 @@ public class EditMoviesPanel extends javax.swing.JPanel {
 
     private void initCombosMombos() throws Exception {
         cbMovieGenre.setModel(new DefaultComboBoxModel<>(repo.selectGenres().toArray()));
-        cbMovieDirector.setModel(new DefaultComboBoxModel<>(repo.selectDirectors().toArray()));
     }
 }

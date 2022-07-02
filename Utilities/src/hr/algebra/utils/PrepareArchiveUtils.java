@@ -5,6 +5,7 @@
  */
 package hr.algebra.utils;
 
+import hr.alan.businessModel.Director;
 import hr.alan.businessModel.Movie;
 import hr.alan.businessModel.MovieArchive;
 import hr.alan.businessModel.MovieCast;
@@ -13,6 +14,7 @@ import hr.alan.dal.Repository;
 import hr.alan.dal.RepositoryFactory;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,13 +33,15 @@ public class PrepareArchiveUtils {
         List<MovieCast> movieCast = new ArrayList<>();
         List<Movie> movies = repo.selectMovies();
         movies.forEach((movie) -> {
-            Set<Person> selectMovieCastActor = null;
             try {
+                Set<Person> selectMovieCastActor = null;
                 selectMovieCastActor = repo.selectMovieCastActor(movie.getId());
+                Optional<Person> peroKero = repo.selectMovieDirectors(movie.getId());
+                Person theRealOg = peroKero.isPresent() ? peroKero.get() : new Director(-1, "No director", "No director");
+                movieCast.add(new MovieCast(selectMovieCastActor, movie, (Director) theRealOg));
             } catch (Exception ex) {
-                MessageUtils.showErrorMessage("Error", "Something went wrong. Contact BOSS");
+                Logger.getLogger(PrepareArchiveUtils.class.getName()).log(Level.SEVERE, null, ex);
             }
-            movieCast.add(new MovieCast(selectMovieCastActor, movie));
         });
         return new MovieArchive(movieCast);
     }

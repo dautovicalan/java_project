@@ -38,8 +38,8 @@ import javax.swing.JList;
  */
 public class SqlRepository implements Repository{
     
-    private static final String CREATE_MOVIE = "{ CALL createMovie (?,?,?,?,?,?,?,?,?) }";
-    private static final String UPDATE_MOVIE = "{ CALL updateMovie (?,?,?,?,?,?,?,?,?) }";
+    private static final String CREATE_MOVIE = "{ CALL createMovie (?,?,?,?,?,?,?,?) }";
+    private static final String UPDATE_MOVIE = "{ CALL updateMovie (?,?,?,?,?,?,?,?) }";
     private static final String DELETE_MOVIE = "{ CALL deleteMovie (?) }";
     private static final String SELECT_MOVIES = "{ CALL selectMovies }";
     private static final String SELECT_MOVIE = "{ CALL selectMovie (?) }";
@@ -57,6 +57,7 @@ public class SqlRepository implements Repository{
     private static final String CREATE_CAST_ACTOR = "{ CALL createCastActor (?,?) }";
     private static final String CREATE_CAST_DIRECTOR = "{ CALL createCastDirector (?,?) }";
     private static final String SELECT_MOVIE_CAST_ACTOR = "{ CALL selectMovieCastActor (?) }";
+    private static final String SELECT_MOVIE_DIRECTORS = "{ CALL selectMovieDirectors (?) }";
     private static final String CREATE_GENRE = "{ CALL createGenre (?,?) }";
 
     
@@ -67,6 +68,7 @@ public class SqlRepository implements Repository{
     
     private static final String DELETE_ALL_DB_DATA = "{ CALL deleteAllDBData }";
     private static final String DELETE_ACTOR_FROM_MOVIE = "{ CALL deleteActorFromMovie (?,?) }";
+    private static final String DELETE_DIRECTOR_FROM_MOVIE = "{ CALL deleteDirectorFromMovie (?,?) }";
 
     @Override
     public List<Movie> selectMovies() throws SQLException {
@@ -87,10 +89,7 @@ public class SqlRepository implements Repository{
                         rs.getString("MoviePicturePath"), 
                         LocalDate.parse(rs.getString("MovieBegin"), Movie.POCETAK_FILMA_FORMATTER),
                         new Genre(rs.getInt("GenreId"),
-                        rs.getString("GenreName")),
-                        new Director(rs.getInt("DirectorId"),
-                                rs.getString("DirectorFirstName"),
-                                rs.getString("DirectorLastName"))
+                        rs.getString("GenreName"))
                 )
                 );
             }
@@ -154,11 +153,7 @@ public class SqlRepository implements Repository{
                                 rs.getString("MoviePicturePath"), 
                                 LocalDate.parse(rs.getString("MovieBegin"), Movie.POCETAK_FILMA_FORMATTER),
                                 new Genre(rs.getInt("GenreId"),
-                                    rs.getString("GenreName")),
-                                new Director(rs.getInt("DirectorId"),
-                                rs.getString("DirectorFirstName"),
-                                rs.getString("DirectorLastName"))
-                                )
+                                    rs.getString("GenreName")))
                     );
                 }
 
@@ -180,7 +175,6 @@ public class SqlRepository implements Repository{
             stmt.setInt("@" + "genreId", data.getGenre().getId());
             stmt.setString("@" + "movieBegin", data.getMovieBegin().format(Movie.POCETAK_FILMA_FORMATTER));
             stmt.setString("@" + "moviePicturePath", data.getMoviePicturePath());
-            stmt.setInt("@" + "directorId", data.getDirector().getId());
             stmt.setInt("@" + "movieId", id);
 
             stmt.executeUpdate();
@@ -199,7 +193,6 @@ public class SqlRepository implements Repository{
             stmt.setInt("@" + "genreId", movie.getGenre().getId());
             stmt.setString("@" + "movieBegin", movie.getMovieBegin().format(Movie.POCETAK_FILMA_FORMATTER));
             stmt.setString("@" + "moviePicturePath", movie.getMoviePicturePath());
-            stmt.setInt("@" + "directorId", movie.getDirector().getId());
             stmt.registerOutParameter("@" + "movieId", Types.INTEGER);
 
             stmt.executeUpdate();
@@ -215,7 +208,7 @@ public class SqlRepository implements Repository{
 
             for (UploadData movie : movies) {
                 int createdGenre = createGenre(movie.getGenre());
-                int createdDirector = createDirector((Director) movie.getMovie().getDirector());
+                int createdDirector = createDirector((Director) movie.getDirector());
                 
                 stmt.setString("@" + "title", movie.getMovie().getTitle());
                 stmt.setString("@" + "pubDate", movie.getMovie().getPubDate().format(Movie.DATE_FORMATTER));
@@ -224,10 +217,11 @@ public class SqlRepository implements Repository{
                 stmt.setString("@" + "movieBegin", movie.getMovie().getMovieBegin().format(Movie.POCETAK_FILMA_FORMATTER));
                 stmt.setString("@" + "moviePicturePath", movie.getMovie().getMoviePicturePath());
                 stmt.setInt("@" + "genreId", createdGenre);  
-                stmt.setInt("@" + "directorId", createdDirector);
                 stmt.registerOutParameter("@" + "movieId", Types.INTEGER);
                 stmt.executeUpdate();
                 int createdMovie = stmt.getInt("@" + "movieId");
+                
+                createCastDirector(createdMovie, createdDirector);
                 
                 
                 for (Person actor : movie.getActors()) {
@@ -422,15 +416,16 @@ public class SqlRepository implements Repository{
     }
 
     @Override
-    public void createCastDirector(int movieId, Director director) throws SQLException {
+    public void createCastDirector(int movieId, int directorId) throws SQLException {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(CREATE_CAST_DIRECTOR)) {
-            stmt.setInt("@" + "directorId", director.getId());
+            stmt.setInt("@" + "directorId", directorId);
             stmt.setInt("@" + "movieId", movieId);
             stmt.executeUpdate();
         }
     }
+    
 
     @Override
     public Set<Person> selectMovieCastActor(int movieId) throws SQLException {
@@ -499,6 +494,19 @@ public class SqlRepository implements Repository{
             stmt.executeUpdate();
         }
     }
+    
+    @Override
+    public void deleteDirectorFromMovie(int movieId, int directorId) throws SQLException {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(DELETE_DIRECTOR_FROM_MOVIE)) {
+
+            stmt.setInt("@" + "movieId", movieId);
+            stmt.setInt("@" + "directorId", directorId);
+
+            stmt.executeUpdate();
+        }
+    }
 
     @Override
     public int createGenre(Genre movie) throws SQLException {
@@ -528,5 +536,24 @@ public class SqlRepository implements Repository{
             }
         }
         return genres;
+    }
+
+    @Override
+    public Optional<Person> selectMovieDirectors(int movieId) throws SQLException {
+       DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(SELECT_MOVIE_DIRECTORS)) {
+            stmt.setInt("@" + "movieId", movieId);
+            try (ResultSet rs = stmt.executeQuery()) {
+
+                if (rs.next()) {
+                    
+                           return Optional.of(new Director(rs.getInt("Id"), rs.getString("FirstName"), 
+                                    rs.getString("LastName")));
+                   
+                }
+            }
+          return Optional.empty();
+        }
     }
 }
