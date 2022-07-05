@@ -100,11 +100,12 @@ BEGIN
 	WHERE Id = @movieId
 END
 
-CREATE PROCEDURE deleteMovie
+ALTER PROCEDURE deleteMovie
 	@movieId INT	 
 AS 
 BEGIN
 	DELETE FROM MovieCast WHERE MovieId = @movieId
+	DELETE FROM MovieDirectors WHERE MovieId = @movieId
 
 	DELETE  
 	FROM Movie

@@ -57,6 +57,9 @@ public class AdminForm extends javax.swing.JFrame {
         lsParsedData = new javax.swing.JList<>();
         btnDeleteAll = new javax.swing.JButton();
         btnUploadData = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jmiLogout = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("ADMIN APP");
@@ -76,6 +79,21 @@ public class AdminForm extends javax.swing.JFrame {
                 btnUploadDataActionPerformed(evt);
             }
         });
+
+        jMenu1.setText("Actions");
+
+        jmiLogout.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
+        jmiLogout.setText("Logout");
+        jmiLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiLogoutActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jmiLogout);
+
+        jMenuBar1.add(jMenu1);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -100,12 +118,12 @@ public class AdminForm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
                 .addComponent(btnDeleteAll, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(36, 36, 36))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(445, Short.MAX_VALUE)
+                    .addContainerGap(414, Short.MAX_VALUE)
                     .addComponent(btnUploadData, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(31, 31, 31)))
         );
@@ -131,6 +149,11 @@ public class AdminForm extends javax.swing.JFrame {
             }
         });
     }//GEN-LAST:event_btnUploadDataActionPerformed
+
+    private void jmiLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiLogoutActionPerformed
+        this.dispose();
+        LoginForm.main(null);
+    }//GEN-LAST:event_jmiLogoutActionPerformed
 
     /**
      * @param args the command line arguments
@@ -170,7 +193,10 @@ public class AdminForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDeleteAll;
     private javax.swing.JButton btnUploadData;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JMenuItem jmiLogout;
     private javax.swing.JList<Item> lsParsedData;
     // End of variables declaration//GEN-END:variables
 
