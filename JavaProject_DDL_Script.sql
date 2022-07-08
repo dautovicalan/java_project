@@ -22,7 +22,7 @@ CREATE TABLE Movie
 	MovieBegin NVARCHAR(90) NULL
 )
 
-ALTER PROC selectMovies
+CREATE PROC selectMovies
 AS
 BEGIN
 	SELECT Movie.Id, Movie.Title, Movie.PubDate, Movie.MovieDescription, Movie.Duration, Movie.MoviePicturePath,
@@ -31,7 +31,7 @@ BEGIN
 	INNER JOIN MovieGenre ON MovieGenre.Id = Movie.MovieGenreId
 END
 
-ALTER PROC selectMovie
+CREATE PROC selectMovie
 	@movieId INT
 AS
 BEGIN
@@ -42,7 +42,7 @@ BEGIN
 	WHERE Movie.Id = @movieId
 END
 
-ALTER PROC createMovie
+CREATE PROC createMovie
 	@title NVARCHAR(250),
 	@pubDate NVARCHAR(90),
 	@description NVARCHAR(MAX),
@@ -59,7 +59,7 @@ BEGIN
 	SET @movieId = SCOPE_IDENTITY()
 END
 
-ALTER PROC createGenre
+CREATE PROC createGenre
 	@title NVARCHAR(250),
 	@genreId INT OUTPUT
 AS
@@ -83,7 +83,7 @@ BEGIN
 	SELECT * FROM MovieGenre
 END
 
-ALTER PROC updateMovie
+CREATE PROC updateMovie
 	@title NVARCHAR(250),
 	@pubDate NVARCHAR(90),
 	@description NVARCHAR(MAX),
@@ -100,7 +100,7 @@ BEGIN
 	WHERE Id = @movieId
 END
 
-ALTER PROCEDURE deleteMovie
+CREATE PROCEDURE deleteMovie
 	@movieId INT	 
 AS 
 BEGIN
@@ -125,7 +125,7 @@ CREATE TABLE Actor
 	LastName NVARCHAR(25) NOT NULL
 )
 
-ALTER PROC selectActors
+CREATE PROC selectActors
 AS
 BEGIN
 	SELECT DISTINCT * FROM Actor GROUP BY Id, FirstName, LastName
@@ -138,7 +138,7 @@ BEGIN
 	SELECT * FROM Actor WHERE Id = @actorId
 END
 
-ALTER PROC createActor
+CREATE PROC createActor
 	@firstName NVARCHAR(25),
 	@lastName NVARCHAR(25),
 	@actorId INT OUTPUT
@@ -157,7 +157,7 @@ BEGIN
 		END
 END
 
-ALTER PROC updateActor
+CREATE PROC updateActor
 	@firstName NVARCHAR(25),
 	@lastName NVARCHAR(25),
 	@actorId INT
@@ -168,7 +168,7 @@ BEGIN
 	WHERE Id = @actorId
 END
 
-ALTER PROCEDURE deleteActor
+CREATE PROCEDURE deleteActor
 	@actorId INT	 
 AS 
 BEGIN
@@ -188,20 +188,20 @@ CREATE TABLE Director
 	LastName NVARCHAR(25) NOT NULL
 )
 
-ALTER PROC selectDirectors
+CREATE PROC selectDirectors
 AS
 BEGIN
 	SELECT * FROM Director
 END
 
-ALTER PROC selectDirector
+CREATE PROC selectDirector
 	@directorId INT
 AS
 BEGIN
 	SELECT * FROM Director WHERE Id = @directorId
 END
 
-ALTER PROC createDirector
+CREATE PROC createDirector
 	@firstName NVARCHAR(25),
 	@lastName NVARCHAR(25),
 	@directorId INT OUTPUT
@@ -222,7 +222,7 @@ END
 
 SELECT * FROM Director WHERE FirstName = 'Kyle' AND LastName = 'Balda'
 
-ALTER PROC updateDirector
+CREATE PROC updateDirector
 	@firstName NVARCHAR(25),
 	@lastName NVARCHAR(25),
 	@directorId INT
@@ -233,10 +233,14 @@ BEGIN
 	WHERE Id = @directorId
 END
 
-ALTER PROCEDURE deleteDirector
+CREATE PROCEDURE deleteDirector
 	@directorId INT	 
 AS 
-BEGIN 
+BEGIN
+	DELETE
+	FROM MovieDirectors
+	WHERE Directorid = @directorId
+
 	DELETE  
 	FROM Director
 	WHERE Id = @directorId
@@ -266,7 +270,7 @@ CREATE TABLE AppUser
 	UserPassword NVARCHAR(MAX) NOT NULL
 )
 
-ALTER PROC registerUser
+CREATE PROC registerUser
 	@username NVARCHAR(20),
 	@userPassword NVARCHAR(MAX),
 	@userId INT OUTPUT
@@ -333,7 +337,7 @@ BEGIN
 	VALUES(@directorId, @movieId)
 END
 
-ALTER PROC selectMovieCastActor
+CREATE PROC selectMovieCastActor
 	@movieId INT
 AS
 BEGIN
@@ -384,7 +388,3 @@ BEGIN
 END
 
 EXEC createInitAppAdmin
-
-SELECT Movie.Title, MovieGenre.GenreName
-FROM Movie
-INNER JOIN MovieGenre ON MovieGenre.Id = Movie.MovieGenreId

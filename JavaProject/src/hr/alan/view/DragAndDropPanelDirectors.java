@@ -98,7 +98,7 @@ public class DragAndDropPanelDirectors extends javax.swing.JPanel{
 
         jLabel1.setText("Select movie:");
 
-        btnRemoveDirector.setText("Remove actor from movie");
+        btnRemoveDirector.setText("Remove director from movie");
         btnRemoveDirector.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRemoveDirectorActionPerformed(evt);

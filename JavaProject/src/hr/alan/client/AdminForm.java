@@ -29,7 +29,7 @@ import javax.swing.SwingUtilities;
  */
 public class AdminForm extends javax.swing.JFrame {
 
-    private static final String RSS_FEED = "https://www.blitz-cinestar.hr/rss.aspx?id=1734&najava=1";
+    private static final String RSS_FEED = "https://www.blitz-cinestar.hr/rss.aspx?najava=1";
     /**
      * Creates new form AdminForm
      */
@@ -146,6 +146,7 @@ public class AdminForm extends javax.swing.JFrame {
                 uploadAllFiles();
             } catch (Exception ex) {
                 Logger.getLogger(AdminForm.class.getName()).log(Level.SEVERE, null, ex);
+                MessageUtils.showErrorMessage("Wrong", "Something went wrong");
             }
         });
     }//GEN-LAST:event_btnUploadDataActionPerformed
